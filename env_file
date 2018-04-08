@@ -1,3 +1,3 @@
 SENDGRID_API_KEY=TESTE
 DATABASE_MYSQL=mysql+pymysql://niponcred:niponcred@localhost/niponcred?charset=utf8mb4
-DATABASE_FIREBIRD=firebird+fdb://sysdba:masterkey@d:/sgo/SGO
+DATABASE_FIREBIRD=firebird+fdb://sysdba:ffracert@localhost:3050/[sgo=sgo.fdb]
