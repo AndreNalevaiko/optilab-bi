@@ -1,0 +1,526 @@
+7598 [2018-02-03 17:09:40,382] gorillaspy.logging INFO: Configurado Logging
+7598 [2018-02-03 17:09:40,382] niponcred.api INFO: Configurado Flask
+7598 [2018-02-03 17:09:40,383] niponcred.api INFO: Configurado Ext Flask CORS
+7598 [2018-02-03 17:09:40,383] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+7598 [2018-02-03 17:09:40,385] niponcred.api INFO: Configurado Ext Flask Restless
+7615 [2018-02-03 17:09:52,372] gorillaspy.logging INFO: Configurado Logging
+7615 [2018-02-03 17:09:52,373] niponcred.api INFO: Configurado Flask
+7615 [2018-02-03 17:09:52,373] niponcred.api INFO: Configurado Ext Flask CORS
+7615 [2018-02-03 17:09:52,373] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+7615 [2018-02-03 17:09:52,375] niponcred.api INFO: Configurado Ext Flask Restless
+7615 [2018-02-03 17:09:52,377] niponcred.api INFO: Configurado o health status do API
+7615 [2018-02-03 17:09:52,388] werkzeug INFO:  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+7615 [2018-02-03 17:09:52,388] werkzeug INFO:  * Restarting with stat
+7617 [2018-02-03 17:09:52,665] gorillaspy.logging INFO: Configurado Logging
+7617 [2018-02-03 17:09:52,665] niponcred.api INFO: Configurado Flask
+7617 [2018-02-03 17:09:52,665] niponcred.api INFO: Configurado Ext Flask CORS
+7617 [2018-02-03 17:09:52,665] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+7617 [2018-02-03 17:09:52,668] niponcred.api INFO: Configurado Ext Flask Restless
+7617 [2018-02-03 17:09:52,669] niponcred.api INFO: Configurado o health status do API
+7617 [2018-02-03 17:09:52,677] werkzeug WARNING:  * Debugger is active!
+7617 [2018-02-03 17:09:52,677] werkzeug INFO:  * Debugger PIN: 291-221-541
+7617 [2018-02-03 17:10:30,363] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:10:30] "GET /v1/customer HTTP/1.1" 404 -
+7617 [2018-02-03 17:10:35,684] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:10:35] "GET /customer HTTP/1.1" 404 -
+7617 [2018-02-03 17:10:43,390] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:10:43] "GET /api/customer HTTP/1.1" 404 -
+7617 [2018-02-03 17:10:45,038] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:10:45] "GET /customer HTTP/1.1" 404 -
+7617 [2018-02-03 17:10:46,099] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:10:46] "GET /customers HTTP/1.1" 404 -
+7617 [2018-02-03 17:10:54,612] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:10:54] "GET /v1/customers HTTP/1.1" 404 -
+7617 [2018-02-03 17:11:49,934] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/api/customer.py', reloading
+7615 [2018-02-03 17:11:49,988] werkzeug INFO:  * Restarting with stat
+7968 [2018-02-03 17:11:50,274] gorillaspy.logging INFO: Configurado Logging
+7968 [2018-02-03 17:11:50,274] niponcred.api INFO: Configurado Flask
+7968 [2018-02-03 17:11:50,275] niponcred.api INFO: Configurado Ext Flask CORS
+7968 [2018-02-03 17:11:50,275] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+7968 [2018-02-03 17:11:50,277] niponcred.api INFO: Configurado Ext Flask Restless
+7968 [2018-02-03 17:11:50,278] niponcred.api INFO: Configurado o health status do API
+7968 [2018-02-03 17:11:50,287] werkzeug WARNING:  * Debugger is active!
+7968 [2018-02-03 17:11:50,287] werkzeug INFO:  * Debugger PIN: 291-221-541
+7968 [2018-02-03 17:12:02,201] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:12:02] "GET /v1/customers HTTP/1.1" 404 -
+7968 [2018-02-03 17:12:04,132] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:12:04] "GET /1/customers HTTP/1.1" 404 -
+7968 [2018-02-03 17:12:19,662] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/api/customer.py', reloading
+7615 [2018-02-03 17:12:19,721] werkzeug INFO:  * Restarting with stat
+7994 [2018-02-03 17:12:20,005] gorillaspy.logging INFO: Configurado Logging
+7994 [2018-02-03 17:12:20,006] niponcred.api INFO: Configurado Flask
+7994 [2018-02-03 17:12:20,006] niponcred.api INFO: Configurado Ext Flask CORS
+7994 [2018-02-03 17:12:20,006] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+7994 [2018-02-03 17:12:20,008] niponcred.api INFO: Configurado Ext Flask Restless
+7994 [2018-02-03 17:12:20,010] niponcred.api INFO: Configurado o health status do API
+7994 [2018-02-03 17:12:20,018] werkzeug WARNING:  * Debugger is active!
+7994 [2018-02-03 17:12:20,019] werkzeug INFO:  * Debugger PIN: 291-221-541
+7994 [2018-02-03 17:12:28,232] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:12:28] "GET /1/customers HTTP/1.1" 404 -
+7994 [2018-02-03 17:12:30,363] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:12:30] "GET /1/customer HTTP/1.1" 404 -
+7994 [2018-02-03 17:12:36,285] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:12:36] "GET /1/customer HTTP/1.1" 404 -
+7994 [2018-02-03 17:12:43,334] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:12:43] "GET /v1/customer HTTP/1.1" 400 -
+7994 [2018-02-03 17:13:05,604] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/api/customer.py', reloading
+7615 [2018-02-03 17:13:05,664] werkzeug INFO:  * Restarting with stat
+8035 [2018-02-03 17:13:05,944] gorillaspy.logging INFO: Configurado Logging
+8035 [2018-02-03 17:13:05,944] niponcred.api INFO: Configurado Flask
+8035 [2018-02-03 17:13:05,944] niponcred.api INFO: Configurado Ext Flask CORS
+8035 [2018-02-03 17:13:05,944] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8035 [2018-02-03 17:13:05,947] niponcred.api INFO: Configurado Ext Flask Restless
+8035 [2018-02-03 17:13:05,948] niponcred.api INFO: Configurado o health status do API
+8035 [2018-02-03 17:13:05,957] werkzeug WARNING:  * Debugger is active!
+8035 [2018-02-03 17:13:05,957] werkzeug INFO:  * Debugger PIN: 291-221-541
+8035 [2018-02-03 17:13:22,165] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/config.py', reloading
+7615 [2018-02-03 17:13:22,231] werkzeug INFO:  * Restarting with stat
+8048 [2018-02-03 17:13:22,518] gorillaspy.logging INFO: Configurado Logging
+8048 [2018-02-03 17:13:22,519] niponcred.api INFO: Configurado Flask
+8048 [2018-02-03 17:13:22,519] niponcred.api INFO: Configurado Ext Flask CORS
+8048 [2018-02-03 17:13:22,519] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8048 [2018-02-03 17:13:22,521] niponcred.api INFO: Configurado Ext Flask Restless
+8048 [2018-02-03 17:13:22,523] niponcred.api INFO: Configurado o health status do API
+8048 [2018-02-03 17:13:22,531] werkzeug WARNING:  * Debugger is active!
+8048 [2018-02-03 17:13:22,532] werkzeug INFO:  * Debugger PIN: 291-221-541
+8048 [2018-02-03 17:13:24,752] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:13:24] "GET /v1/customer HTTP/1.1" 400 -
+8048 [2018-02-03 17:13:25,413] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:13:25] "GET /v1/customer HTTP/1.1" 400 -
+8048 [2018-02-03 17:14:10,433] gorillaspy.web.api.util ERROR: One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper|Customer|customer'. Original exception was: Mapper 'Mapper|Uf|uf' has no property 'uf'
+Traceback (most recent call last):
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/flask_restless/views.py", line 157, in decorator
+    return func(*args, **kw)
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/mimerender.py", line 244, in wrapper
+    result = target(*args, **kwargs)
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/flask/views.py", line 84, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/flask/views.py", line 149, in dispatch_request
+    return meth(*args, **kwargs)
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/flask_restless/views.py", line 189, in wrapped
+    return func(*args, **kw)
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/flask_restless/views.py", line 1252, in get
+    instance = get_by(self.session, self.model, instid, self.primary_key)
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/flask_restless/helpers.py", line 494, in get_by
+    primary_key)
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/flask_restless/helpers.py", line 481, in query_by_primary_key
+    query = session_query(session, model)
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/flask_restless/helpers.py", line 77, in session_query
+    if hasattr(model, 'query'):
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/flask_sqlalchemy/__init__.py", line 498, in __get__
+    mapper = orm.class_mapper(type)
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/sqlalchemy/orm/base.py", line 421, in class_mapper
+    mapper = _inspect_mapped_class(class_, configure=configure)
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/sqlalchemy/orm/base.py", line 400, in _inspect_mapped_class
+    mapper._configure_all()
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/sqlalchemy/orm/mapper.py", line 1222, in _configure_all
+    configure_mappers()
+  File "/home/andre/devops/api-niponcred/.venv/lib/python3.6/site-packages/sqlalchemy/orm/mapper.py", line 2869, in configure_mappers
+    raise e
+sqlalchemy.exc.InvalidRequestError: One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper|Customer|customer'. Original exception was: Mapper 'Mapper|Uf|uf' has no property 'uf'
+8048 [2018-02-03 17:14:10,438] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:14:10] "GET /v1/customer/23 HTTP/1.1" 500 -
+8048 [2018-02-03 17:14:59,628] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/model/customer.py', reloading
+7615 [2018-02-03 17:14:59,687] werkzeug INFO:  * Restarting with stat
+8108 [2018-02-03 17:14:59,981] gorillaspy.logging INFO: Configurado Logging
+8108 [2018-02-03 17:14:59,982] niponcred.api INFO: Configurado Flask
+8108 [2018-02-03 17:14:59,982] niponcred.api INFO: Configurado Ext Flask CORS
+8108 [2018-02-03 17:14:59,982] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8108 [2018-02-03 17:14:59,985] niponcred.api INFO: Configurado Ext Flask Restless
+8108 [2018-02-03 17:14:59,986] niponcred.api INFO: Configurado o health status do API
+8108 [2018-02-03 17:14:59,995] werkzeug WARNING:  * Debugger is active!
+8108 [2018-02-03 17:14:59,995] werkzeug INFO:  * Debugger PIN: 291-221-541
+8108 [2018-02-03 17:15:05,555] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:15:05] "GET /v1/customer HTTP/1.1" 400 -
+8108 [2018-02-03 17:16:13,962] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/model/customer.py', reloading
+7615 [2018-02-03 17:16:14,021] werkzeug INFO:  * Restarting with stat
+8168 [2018-02-03 17:16:14,301] gorillaspy.logging INFO: Configurado Logging
+8168 [2018-02-03 17:16:14,301] niponcred.api INFO: Configurado Flask
+8168 [2018-02-03 17:16:14,302] niponcred.api INFO: Configurado Ext Flask CORS
+8168 [2018-02-03 17:16:14,302] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8168 [2018-02-03 17:16:14,304] niponcred.api INFO: Configurado Ext Flask Restless
+8168 [2018-02-03 17:16:14,305] niponcred.api INFO: Configurado o health status do API
+8168 [2018-02-03 17:16:14,314] werkzeug WARNING:  * Debugger is active!
+8168 [2018-02-03 17:16:14,314] werkzeug INFO:  * Debugger PIN: 291-221-541
+8168 [2018-02-03 17:16:19,634] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:16:19] "GET /v1/customer HTTP/1.1" 400 -
+8168 [2018-02-03 17:17:48,470] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/model/customer.py', reloading
+7615 [2018-02-03 17:17:48,531] werkzeug INFO:  * Restarting with stat
+8302 [2018-02-03 17:18:17,936] gorillaspy.logging INFO: Configurado Logging
+8302 [2018-02-03 17:18:17,937] niponcred.api INFO: Configurado Flask
+8302 [2018-02-03 17:18:17,937] niponcred.api INFO: Configurado Ext Flask CORS
+8302 [2018-02-03 17:18:17,937] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8302 [2018-02-03 17:18:17,939] niponcred.api INFO: Configurado Ext Flask Restless
+8302 [2018-02-03 17:18:17,941] niponcred.api INFO: Configurado o health status do API
+8302 [2018-02-03 17:18:17,950] werkzeug INFO:  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+8302 [2018-02-03 17:18:17,950] werkzeug INFO:  * Restarting with stat
+8304 [2018-02-03 17:18:18,224] gorillaspy.logging INFO: Configurado Logging
+8304 [2018-02-03 17:18:18,225] niponcred.api INFO: Configurado Flask
+8304 [2018-02-03 17:18:18,225] niponcred.api INFO: Configurado Ext Flask CORS
+8304 [2018-02-03 17:18:18,225] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8304 [2018-02-03 17:18:18,228] niponcred.api INFO: Configurado Ext Flask Restless
+8304 [2018-02-03 17:18:18,229] niponcred.api INFO: Configurado o health status do API
+8304 [2018-02-03 17:18:18,236] werkzeug WARNING:  * Debugger is active!
+8304 [2018-02-03 17:18:18,237] werkzeug INFO:  * Debugger PIN: 291-221-541
+8304 [2018-02-03 17:18:22,375] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:18:22] "GET /v1/customer HTTP/1.1" 400 -
+8304 [2018-02-03 17:19:43,209] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/model/uf.py', reloading
+8302 [2018-02-03 17:19:43,268] werkzeug INFO:  * Restarting with stat
+8371 [2018-02-03 17:19:43,546] gorillaspy.logging INFO: Configurado Logging
+8371 [2018-02-03 17:19:43,546] niponcred.api INFO: Configurado Flask
+8371 [2018-02-03 17:19:43,547] niponcred.api INFO: Configurado Ext Flask CORS
+8371 [2018-02-03 17:19:43,547] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8371 [2018-02-03 17:19:43,549] niponcred.api INFO: Configurado Ext Flask Restless
+8371 [2018-02-03 17:19:43,550] niponcred.api INFO: Configurado o health status do API
+8371 [2018-02-03 17:19:43,559] werkzeug WARNING:  * Debugger is active!
+8371 [2018-02-03 17:19:43,559] werkzeug INFO:  * Debugger PIN: 291-221-541
+8371 [2018-02-03 17:19:48,636] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/model/uf.py', reloading
+8302 [2018-02-03 17:19:48,688] werkzeug INFO:  * Restarting with stat
+8387 [2018-02-03 17:19:48,969] gorillaspy.logging INFO: Configurado Logging
+8387 [2018-02-03 17:19:48,969] niponcred.api INFO: Configurado Flask
+8387 [2018-02-03 17:19:48,969] niponcred.api INFO: Configurado Ext Flask CORS
+8387 [2018-02-03 17:19:48,969] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8387 [2018-02-03 17:19:48,972] niponcred.api INFO: Configurado Ext Flask Restless
+8387 [2018-02-03 17:19:48,973] niponcred.api INFO: Configurado o health status do API
+8387 [2018-02-03 17:19:48,981] werkzeug WARNING:  * Debugger is active!
+8387 [2018-02-03 17:19:48,982] werkzeug INFO:  * Debugger PIN: 291-221-541
+8387 [2018-02-03 17:21:34,139] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/model/phone.py', reloading
+8302 [2018-02-03 17:21:34,198] werkzeug INFO:  * Restarting with stat
+8495 [2018-02-03 17:21:34,476] gorillaspy.logging INFO: Configurado Logging
+8495 [2018-02-03 17:21:34,476] niponcred.api INFO: Configurado Flask
+8495 [2018-02-03 17:21:34,476] niponcred.api INFO: Configurado Ext Flask CORS
+8495 [2018-02-03 17:21:34,476] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8495 [2018-02-03 17:21:34,479] niponcred.api INFO: Configurado Ext Flask Restless
+8495 [2018-02-03 17:21:34,480] niponcred.api INFO: Configurado o health status do API
+8495 [2018-02-03 17:21:34,487] werkzeug WARNING:  * Debugger is active!
+8495 [2018-02-03 17:21:34,488] werkzeug INFO:  * Debugger PIN: 291-221-541
+8495 [2018-02-03 17:21:40,558] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/model/phone.py', reloading
+8302 [2018-02-03 17:21:40,602] werkzeug INFO:  * Restarting with stat
+8505 [2018-02-03 17:21:40,882] gorillaspy.logging INFO: Configurado Logging
+8505 [2018-02-03 17:21:40,882] niponcred.api INFO: Configurado Flask
+8505 [2018-02-03 17:21:40,882] niponcred.api INFO: Configurado Ext Flask CORS
+8505 [2018-02-03 17:21:40,882] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8505 [2018-02-03 17:21:40,885] niponcred.api INFO: Configurado Ext Flask Restless
+8505 [2018-02-03 17:21:40,886] niponcred.api INFO: Configurado o health status do API
+8505 [2018-02-03 17:21:40,894] werkzeug WARNING:  * Debugger is active!
+8505 [2018-02-03 17:21:40,894] werkzeug INFO:  * Debugger PIN: 291-221-541
+8505 [2018-02-03 17:21:42,929] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/model/phone.py', reloading
+8302 [2018-02-03 17:21:42,985] werkzeug INFO:  * Restarting with stat
+8521 [2018-02-03 17:21:43,267] gorillaspy.logging INFO: Configurado Logging
+8521 [2018-02-03 17:21:43,268] niponcred.api INFO: Configurado Flask
+8521 [2018-02-03 17:21:43,268] niponcred.api INFO: Configurado Ext Flask CORS
+8521 [2018-02-03 17:21:43,268] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8521 [2018-02-03 17:21:43,271] niponcred.api INFO: Configurado Ext Flask Restless
+8521 [2018-02-03 17:21:43,273] niponcred.api INFO: Configurado o health status do API
+8521 [2018-02-03 17:21:43,283] werkzeug WARNING:  * Debugger is active!
+8521 [2018-02-03 17:21:43,284] werkzeug INFO:  * Debugger PIN: 291-221-541
+8521 [2018-02-03 17:22:18,709] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/model/customer.py', reloading
+8302 [2018-02-03 17:22:18,749] werkzeug INFO:  * Restarting with stat
+8569 [2018-02-03 17:22:19,026] gorillaspy.logging INFO: Configurado Logging
+8569 [2018-02-03 17:22:19,026] niponcred.api INFO: Configurado Flask
+8569 [2018-02-03 17:22:19,026] niponcred.api INFO: Configurado Ext Flask CORS
+8569 [2018-02-03 17:22:19,026] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8569 [2018-02-03 17:22:19,029] niponcred.api INFO: Configurado Ext Flask Restless
+8569 [2018-02-03 17:22:19,030] niponcred.api INFO: Configurado o health status do API
+8569 [2018-02-03 17:22:19,039] werkzeug WARNING:  * Debugger is active!
+8569 [2018-02-03 17:22:19,040] werkzeug INFO:  * Debugger PIN: 291-221-541
+8569 [2018-02-03 17:22:24,096] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/model/customer.py', reloading
+8302 [2018-02-03 17:22:24,150] werkzeug INFO:  * Restarting with stat
+8581 [2018-02-03 17:22:24,426] gorillaspy.logging INFO: Configurado Logging
+8581 [2018-02-03 17:22:24,427] niponcred.api INFO: Configurado Flask
+8581 [2018-02-03 17:22:24,427] niponcred.api INFO: Configurado Ext Flask CORS
+8581 [2018-02-03 17:22:24,427] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8581 [2018-02-03 17:22:24,429] niponcred.api INFO: Configurado Ext Flask Restless
+8581 [2018-02-03 17:22:24,431] niponcred.api INFO: Configurado o health status do API
+8581 [2018-02-03 17:22:24,439] werkzeug WARNING:  * Debugger is active!
+8581 [2018-02-03 17:22:24,439] werkzeug INFO:  * Debugger PIN: 291-221-541
+8581 [2018-02-03 17:22:31,517] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/model/customer.py', reloading
+8302 [2018-02-03 17:22:31,566] werkzeug INFO:  * Restarting with stat
+8597 [2018-02-03 17:22:31,847] gorillaspy.logging INFO: Configurado Logging
+8597 [2018-02-03 17:22:31,848] niponcred.api INFO: Configurado Flask
+8597 [2018-02-03 17:22:31,848] niponcred.api INFO: Configurado Ext Flask CORS
+8597 [2018-02-03 17:22:31,848] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8597 [2018-02-03 17:22:31,850] niponcred.api INFO: Configurado Ext Flask Restless
+8597 [2018-02-03 17:22:31,852] niponcred.api INFO: Configurado o health status do API
+8597 [2018-02-03 17:22:31,860] werkzeug WARNING:  * Debugger is active!
+8597 [2018-02-03 17:22:31,860] werkzeug INFO:  * Debugger PIN: 291-221-541
+8597 [2018-02-03 17:22:43,987] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/model/customer.py', reloading
+8302 [2018-02-03 17:22:44,043] werkzeug INFO:  * Restarting with stat
+8613 [2018-02-03 17:22:44,327] gorillaspy.logging INFO: Configurado Logging
+8613 [2018-02-03 17:22:44,328] niponcred.api INFO: Configurado Flask
+8613 [2018-02-03 17:22:44,328] niponcred.api INFO: Configurado Ext Flask CORS
+8613 [2018-02-03 17:22:44,328] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8613 [2018-02-03 17:22:44,330] niponcred.api INFO: Configurado Ext Flask Restless
+8613 [2018-02-03 17:22:44,331] niponcred.api INFO: Configurado o health status do API
+8613 [2018-02-03 17:22:44,339] werkzeug WARNING:  * Debugger is active!
+8613 [2018-02-03 17:22:44,340] werkzeug INFO:  * Debugger PIN: 291-221-541
+8613 [2018-02-03 17:22:48,758] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:22:48] "GET /v1/customer HTTP/1.1" 400 -
+8613 [2018-02-03 17:22:49,592] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:22:49] "GET /v1/customer HTTP/1.1" 400 -
+8613 [2018-02-03 17:23:12,661] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/model/customer.py', reloading
+8302 [2018-02-03 17:23:12,704] werkzeug INFO:  * Restarting with stat
+8645 [2018-02-03 17:23:12,989] gorillaspy.logging INFO: Configurado Logging
+8645 [2018-02-03 17:23:12,989] niponcred.api INFO: Configurado Flask
+8645 [2018-02-03 17:23:12,989] niponcred.api INFO: Configurado Ext Flask CORS
+8645 [2018-02-03 17:23:12,990] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8645 [2018-02-03 17:23:12,992] niponcred.api INFO: Configurado Ext Flask Restless
+8645 [2018-02-03 17:23:12,993] niponcred.api INFO: Configurado o health status do API
+8645 [2018-02-03 17:23:13,002] werkzeug WARNING:  * Debugger is active!
+8645 [2018-02-03 17:23:13,002] werkzeug INFO:  * Debugger PIN: 291-221-541
+8645 [2018-02-03 17:24:15,774] werkzeug INFO:  * Detected change in '/home/andre/devops/api-niponcred/niponcred/model/customer.py', reloading
+8302 [2018-02-03 17:24:15,822] werkzeug INFO:  * Restarting with stat
+8735 [2018-02-03 17:24:16,120] gorillaspy.logging INFO: Configurado Logging
+8735 [2018-02-03 17:24:16,120] niponcred.api INFO: Configurado Flask
+8735 [2018-02-03 17:24:16,120] niponcred.api INFO: Configurado Ext Flask CORS
+8735 [2018-02-03 17:24:16,120] niponcred.api INFO: Configurado Extensão Flask SQLAlchemy
+8735 [2018-02-03 17:24:16,123] niponcred.api INFO: Configurado Ext Flask Restless
+8735 [2018-02-03 17:24:16,124] niponcred.api INFO: Configurado o health status do API
+8735 [2018-02-03 17:24:16,132] werkzeug WARNING:  * Debugger is active!
+8735 [2018-02-03 17:24:16,133] werkzeug INFO:  * Debugger PIN: 291-221-541
+8735 [2018-02-03 17:24:18,454] werkzeug INFO: 127.0.0.1 - - [03/Feb/2018 17:24:18] "GET /v1/customer HTTP/1.1" 200 -
+17215 [2018-02-06 23:23:08,389] gorillaspy.logging INFO: Configurado Logging
+17215 [2018-02-06 23:23:08,390] niponcred_api.api INFO: Configurado Flask
+17215 [2018-02-06 23:23:08,390] niponcred_api.api INFO: Configurado Ext Flask CORS
+17215 [2018-02-06 23:23:08,390] niponcred_api.api INFO: Configurado Extensão Flask SQLAlchemy
+17215 [2018-02-06 23:23:08,393] niponcred_api.api INFO: Configurado Ext Flask Restless
+17215 [2018-02-06 23:23:08,394] niponcred_api.api INFO: Configurado o health status do API
+17215 [2018-02-06 23:23:08,404] werkzeug INFO:  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+17215 [2018-02-06 23:23:08,405] werkzeug INFO:  * Restarting with stat
+17217 [2018-02-06 23:23:08,696] gorillaspy.logging INFO: Configurado Logging
+17217 [2018-02-06 23:23:08,697] niponcred_api.api INFO: Configurado Flask
+17217 [2018-02-06 23:23:08,697] niponcred_api.api INFO: Configurado Ext Flask CORS
+17217 [2018-02-06 23:23:08,697] niponcred_api.api INFO: Configurado Extensão Flask SQLAlchemy
+17217 [2018-02-06 23:23:08,700] niponcred_api.api INFO: Configurado Ext Flask Restless
+17217 [2018-02-06 23:23:08,701] niponcred_api.api INFO: Configurado o health status do API
+17217 [2018-02-06 23:23:08,710] werkzeug WARNING:  * Debugger is active!
+17217 [2018-02-06 23:23:08,710] werkzeug INFO:  * Debugger PIN: 134-541-652
+17217 [2018-02-06 23:23:50,437] werkzeug INFO: 127.0.0.1 - - [06/Feb/2018 23:23:50] "GET /v1/customer HTTP/1.1" 200 -
+17217 [2018-02-06 23:24:26,160] werkzeug INFO: 127.0.0.1 - - [06/Feb/2018 23:24:26] "GET /v1/phone HTTP/1.1" 200 -
+17217 [2018-02-06 23:24:54,443] werkzeug INFO: 127.0.0.1 - - [06/Feb/2018 23:24:54] "GET /v1/uf HTTP/1.1" 404 -
+17217 [2018-02-06 23:24:56,739] werkzeug INFO: 127.0.0.1 - - [06/Feb/2018 23:24:56] "GET /v1/uf HTTP/1.1" 404 -
+17217 [2018-02-06 23:25:18,344] werkzeug INFO:  * Detected change in '/home/andre/devops/niponcred-api/niponcred_api/api/__init__.py', reloading
+17215 [2018-02-06 23:25:18,395] werkzeug INFO:  * Restarting with stat
+17424 [2018-02-06 23:25:18,693] gorillaspy.logging INFO: Configurado Logging
+17424 [2018-02-06 23:25:18,694] niponcred_api.api INFO: Configurado Flask
+17424 [2018-02-06 23:25:18,694] niponcred_api.api INFO: Configurado Ext Flask CORS
+17424 [2018-02-06 23:25:18,694] niponcred_api.api INFO: Configurado Extensão Flask SQLAlchemy
+17439 [2018-02-06 23:25:31,434] gorillaspy.logging INFO: Configurado Logging
+17439 [2018-02-06 23:25:31,435] niponcred_api.api INFO: Configurado Flask
+17439 [2018-02-06 23:25:31,435] niponcred_api.api INFO: Configurado Ext Flask CORS
+17439 [2018-02-06 23:25:31,435] niponcred_api.api INFO: Configurado Extensão Flask SQLAlchemy
+17439 [2018-02-06 23:25:31,439] niponcred_api.api INFO: Configurado Ext Flask Restless
+17439 [2018-02-06 23:25:31,441] niponcred_api.api INFO: Configurado o health status do API
+17439 [2018-02-06 23:25:31,450] werkzeug INFO:  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+17439 [2018-02-06 23:25:31,451] werkzeug INFO:  * Restarting with stat
+17441 [2018-02-06 23:25:31,735] gorillaspy.logging INFO: Configurado Logging
+17441 [2018-02-06 23:25:31,736] niponcred_api.api INFO: Configurado Flask
+17441 [2018-02-06 23:25:31,736] niponcred_api.api INFO: Configurado Ext Flask CORS
+17441 [2018-02-06 23:25:31,736] niponcred_api.api INFO: Configurado Extensão Flask SQLAlchemy
+17441 [2018-02-06 23:25:31,741] niponcred_api.api INFO: Configurado Ext Flask Restless
+17441 [2018-02-06 23:25:31,742] niponcred_api.api INFO: Configurado o health status do API
+17441 [2018-02-06 23:25:31,751] werkzeug WARNING:  * Debugger is active!
+17441 [2018-02-06 23:25:31,751] werkzeug INFO:  * Debugger PIN: 134-541-652
+17441 [2018-02-06 23:25:34,280] gorillaspy.web.api.util ERROR: (pymysql.err.InternalError) (1054, "Unknown column 'uf.created_at' in 'field list'") [SQL: 'SELECT uf.id AS uf_id, uf.created_at AS uf_created_at, uf.updated_at AS uf_updated_at, uf.name AS uf_name, uf.initials AS uf_initials \nFROM uf ORDER BY uf.id ASC \n LIMIT %(param_1)s'] [parameters: {'param_1': 5}]
+Traceback (most recent call last):
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1182, in _execute_context
+    context)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/default.py", line 470, in do_execute
+    cursor.execute(statement, parameters)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/cursors.py", line 166, in execute
+    result = self._query(query)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/cursors.py", line 322, in _query
+    conn.query(q)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 856, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 1057, in _read_query_result
+    result.read()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 1340, in read
+    first_packet = self.connection._read_packet()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 1014, in _read_packet
+    packet.check_error()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 393, in check_error
+    err.raise_mysql_exception(self._data)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/err.py", line 107, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.InternalError: (1054, "Unknown column 'uf.created_at' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask_restless/views.py", line 157, in decorator
+    return func(*args, **kw)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/mimerender.py", line 244, in wrapper
+    result = target(*args, **kwargs)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask/views.py", line 84, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask/views.py", line 149, in dispatch_request
+    return meth(*args, **kwargs)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask_restless/views.py", line 189, in wrapped
+    return func(*args, **kw)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask_restless/views.py", line 1239, in get
+    return self._search()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask_restless/views.py", line 1194, in _search
+    result = self._paginated(result, deep)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask_restless/views.py", line 981, in _paginated
+    for x in instances[start:end]]
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/orm/query.py", line 2547, in __getitem__
+    return list(res)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/orm/query.py", line 2855, in __iter__
+    return self._execute_and_instances(context)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/orm/query.py", line 2878, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 945, in execute
+    return meth(self, multiparams, params)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/sql/elements.py", line 263, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1053, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1189, in _execute_context
+    context)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1402, in _handle_dbapi_exception
+    exc_info
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/util/compat.py", line 203, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb, cause=cause)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/util/compat.py", line 186, in reraise
+    raise value.with_traceback(tb)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1182, in _execute_context
+    context)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/default.py", line 470, in do_execute
+    cursor.execute(statement, parameters)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/cursors.py", line 166, in execute
+    result = self._query(query)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/cursors.py", line 322, in _query
+    conn.query(q)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 856, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 1057, in _read_query_result
+    result.read()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 1340, in read
+    first_packet = self.connection._read_packet()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 1014, in _read_packet
+    packet.check_error()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 393, in check_error
+    err.raise_mysql_exception(self._data)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/err.py", line 107, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.InternalError: (pymysql.err.InternalError) (1054, "Unknown column 'uf.created_at' in 'field list'") [SQL: 'SELECT uf.id AS uf_id, uf.created_at AS uf_created_at, uf.updated_at AS uf_updated_at, uf.name AS uf_name, uf.initials AS uf_initials \nFROM uf ORDER BY uf.id ASC \n LIMIT %(param_1)s'] [parameters: {'param_1': 5}]
+17441 [2018-02-06 23:25:34,284] werkzeug INFO: 127.0.0.1 - - [06/Feb/2018 23:25:34] "GET /v1/uf HTTP/1.1" 500 -
+17441 [2018-02-06 23:25:37,090] gorillaspy.web.api.util ERROR: (pymysql.err.InternalError) (1054, "Unknown column 'uf.created_at' in 'field list'") [SQL: 'SELECT uf.id AS uf_id, uf.created_at AS uf_created_at, uf.updated_at AS uf_updated_at, uf.name AS uf_name, uf.initials AS uf_initials \nFROM uf ORDER BY uf.id ASC \n LIMIT %(param_1)s'] [parameters: {'param_1': 5}]
+Traceback (most recent call last):
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1182, in _execute_context
+    context)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/default.py", line 470, in do_execute
+    cursor.execute(statement, parameters)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/cursors.py", line 166, in execute
+    result = self._query(query)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/cursors.py", line 322, in _query
+    conn.query(q)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 856, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 1057, in _read_query_result
+    result.read()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 1340, in read
+    first_packet = self.connection._read_packet()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 1014, in _read_packet
+    packet.check_error()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 393, in check_error
+    err.raise_mysql_exception(self._data)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/err.py", line 107, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.InternalError: (1054, "Unknown column 'uf.created_at' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask_restless/views.py", line 157, in decorator
+    return func(*args, **kw)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/mimerender.py", line 244, in wrapper
+    result = target(*args, **kwargs)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask/views.py", line 84, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask/views.py", line 149, in dispatch_request
+    return meth(*args, **kwargs)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask_restless/views.py", line 189, in wrapped
+    return func(*args, **kw)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask_restless/views.py", line 1239, in get
+    return self._search()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask_restless/views.py", line 1194, in _search
+    result = self._paginated(result, deep)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/flask_restless/views.py", line 981, in _paginated
+    for x in instances[start:end]]
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/orm/query.py", line 2547, in __getitem__
+    return list(res)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/orm/query.py", line 2855, in __iter__
+    return self._execute_and_instances(context)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/orm/query.py", line 2878, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 945, in execute
+    return meth(self, multiparams, params)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/sql/elements.py", line 263, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1053, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1189, in _execute_context
+    context)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1402, in _handle_dbapi_exception
+    exc_info
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/util/compat.py", line 203, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb, cause=cause)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/util/compat.py", line 186, in reraise
+    raise value.with_traceback(tb)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1182, in _execute_context
+    context)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/sqlalchemy/engine/default.py", line 470, in do_execute
+    cursor.execute(statement, parameters)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/cursors.py", line 166, in execute
+    result = self._query(query)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/cursors.py", line 322, in _query
+    conn.query(q)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 856, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 1057, in _read_query_result
+    result.read()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 1340, in read
+    first_packet = self.connection._read_packet()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 1014, in _read_packet
+    packet.check_error()
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/connections.py", line 393, in check_error
+    err.raise_mysql_exception(self._data)
+  File "/home/andre/devops/niponcred-api/.venv/lib/python3.6/site-packages/pymysql/err.py", line 107, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.InternalError: (pymysql.err.InternalError) (1054, "Unknown column 'uf.created_at' in 'field list'") [SQL: 'SELECT uf.id AS uf_id, uf.created_at AS uf_created_at, uf.updated_at AS uf_updated_at, uf.name AS uf_name, uf.initials AS uf_initials \nFROM uf ORDER BY uf.id ASC \n LIMIT %(param_1)s'] [parameters: {'param_1': 5}]
+17441 [2018-02-06 23:25:37,091] werkzeug INFO: 127.0.0.1 - - [06/Feb/2018 23:25:37] "GET /v1/uf HTTP/1.1" 500 -
+17441 [2018-02-06 23:26:32,552] werkzeug INFO:  * Detected change in '/home/andre/devops/niponcred-api/niponcred_api/model/uf.py', reloading
+17439 [2018-02-06 23:26:32,613] werkzeug INFO:  * Restarting with stat
+17756 [2018-02-06 23:29:24,113] gorillaspy.logging INFO: Configurado Logging
+17756 [2018-02-06 23:29:24,113] niponcred_api.api INFO: Configurado Flask
+17756 [2018-02-06 23:29:24,113] niponcred_api.api INFO: Configurado Ext Flask CORS
+17756 [2018-02-06 23:29:24,114] niponcred_api.api INFO: Configurado Extensão Flask SQLAlchemy
+17756 [2018-02-06 23:29:24,118] niponcred_api.api INFO: Configurado Ext Flask Restless
+17756 [2018-02-06 23:29:24,119] niponcred_api.api INFO: Configurado o health status do API
+17756 [2018-02-06 23:29:24,128] werkzeug INFO:  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+17756 [2018-02-06 23:29:24,129] werkzeug INFO:  * Restarting with stat
+17758 [2018-02-06 23:29:24,411] gorillaspy.logging INFO: Configurado Logging
+17758 [2018-02-06 23:29:24,412] niponcred_api.api INFO: Configurado Flask
+17758 [2018-02-06 23:29:24,412] niponcred_api.api INFO: Configurado Ext Flask CORS
+17758 [2018-02-06 23:29:24,412] niponcred_api.api INFO: Configurado Extensão Flask SQLAlchemy
+17758 [2018-02-06 23:29:24,417] niponcred_api.api INFO: Configurado Ext Flask Restless
+17758 [2018-02-06 23:29:24,418] niponcred_api.api INFO: Configurado o health status do API
+17758 [2018-02-06 23:29:24,426] werkzeug WARNING:  * Debugger is active!
+17758 [2018-02-06 23:29:24,427] werkzeug INFO:  * Debugger PIN: 134-541-652
+17758 [2018-02-06 23:29:42,649] werkzeug INFO:  * Detected change in '/home/andre/devops/niponcred-api/niponcred_api/model/uf.py', reloading
+17756 [2018-02-06 23:29:42,708] werkzeug INFO:  * Restarting with stat
+17776 [2018-02-06 23:29:42,996] gorillaspy.logging INFO: Configurado Logging
+17776 [2018-02-06 23:29:42,996] niponcred_api.api INFO: Configurado Flask
+17776 [2018-02-06 23:29:42,996] niponcred_api.api INFO: Configurado Ext Flask CORS
+17776 [2018-02-06 23:29:42,997] niponcred_api.api INFO: Configurado Extensão Flask SQLAlchemy
+17776 [2018-02-06 23:29:43,001] niponcred_api.api INFO: Configurado Ext Flask Restless
+17776 [2018-02-06 23:29:43,002] niponcred_api.api INFO: Configurado o health status do API
+17776 [2018-02-06 23:29:43,011] werkzeug WARNING:  * Debugger is active!
+17776 [2018-02-06 23:29:43,011] werkzeug INFO:  * Debugger PIN: 134-541-652
+17776 [2018-02-06 23:29:45,046] werkzeug INFO:  * Detected change in '/home/andre/devops/niponcred-api/niponcred_api/model/uf.py', reloading
+17756 [2018-02-06 23:29:45,105] werkzeug INFO:  * Restarting with stat
+17788 [2018-02-06 23:29:45,390] gorillaspy.logging INFO: Configurado Logging
+17788 [2018-02-06 23:29:45,391] niponcred_api.api INFO: Configurado Flask
+17788 [2018-02-06 23:29:45,391] niponcred_api.api INFO: Configurado Ext Flask CORS
+17788 [2018-02-06 23:29:45,391] niponcred_api.api INFO: Configurado Extensão Flask SQLAlchemy
+17788 [2018-02-06 23:29:45,395] niponcred_api.api INFO: Configurado Ext Flask Restless
+17788 [2018-02-06 23:29:45,397] niponcred_api.api INFO: Configurado o health status do API
+17788 [2018-02-06 23:29:45,405] werkzeug WARNING:  * Debugger is active!
+17788 [2018-02-06 23:29:45,406] werkzeug INFO:  * Debugger PIN: 134-541-652
+17788 [2018-02-06 23:29:57,343] werkzeug INFO: 127.0.0.1 - - [06/Feb/2018 23:29:57] "GET /v1/uf HTTP/1.1" 200 -
+17788 [2018-02-06 23:31:21,590] werkzeug INFO:  * Detected change in '/home/andre/devops/niponcred-api/niponcred_api/model/uf.py', reloading
+17756 [2018-02-06 23:31:21,648] werkzeug INFO:  * Restarting with stat
