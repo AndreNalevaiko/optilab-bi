@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, jsonify
 from optilab_bi import db2
 
 actions = Blueprint('rate_service', __name__, url_prefix='/rate_service')
@@ -40,4 +40,6 @@ def hello():
 
         result_list.append(rate)
 
-    return result_list[0]
+    print(result_list[0])
+
+    return jsonify(result_list)
