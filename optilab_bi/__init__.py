@@ -4,7 +4,7 @@ import fdb
 
 db = SQLAlchemy()
 
-engine = fdb.connect(dsn='/tmp/sgo.fdb', user='sysdba', password='ffracert', charset='latin1')
+engine = fdb.connect(dsn='/home/andre/Documentos/databases/sgo.fdb', user='sysdba', password='masterkey', charset='latin1')
 
 db2 = engine.cursor()
 

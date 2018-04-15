@@ -1,7 +1,7 @@
 import logging
 from urllib.parse import urlparse
 from optilab_bi import config, db
-from optilab_bi.api import rate_service
+from optilab_bi.api import rate_service, billing, abstract_products
 import fdb
 from flask import Flask
 from flask_cors import CORS
@@ -9,6 +9,8 @@ from flask_cors import CORS
 
 def create_blueprints(flask_app):
     flask_app.register_blueprint(rate_service.actions)
+    flask_app.register_blueprint(billing.actions)
+    flask_app.register_blueprint(abstract_products.actions)
 
 LOGGER = logging.getLogger(__name__)
 
