@@ -1,5 +1,9 @@
 Flask==0.12
-SQLAlchemy==1.1.10
 fdb==1.8.0
 Flask-SQLAlchemy==2.3.1
 Flask-Cors==2.1.2
+SQLAlchemy==1.1.18
+PyMySQL==0.7.11
+requests==2.18.4
+alembic==0.9.8
+Flask-Restless==0.17.0

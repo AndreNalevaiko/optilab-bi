@@ -3,6 +3,7 @@
 
 .venv/*
 .idea/*
+__pycache__/*
 
 # Except this file
 !.gitignore
