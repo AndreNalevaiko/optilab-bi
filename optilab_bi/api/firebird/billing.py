@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin
-from optilab_bi import db2
+from optilab_bi import connection
 
 
 actions = Blueprint('billing', __name__, url_prefix='/billing')
@@ -9,6 +9,7 @@ actions = Blueprint('billing', __name__, url_prefix='/billing')
 @actions.route('/', methods=['POST'])
 @cross_origin()
 def billing():
+    session = connection.cursor()
     # Exemplo POST
     # {
 	# 	"period":{
@@ -52,9 +53,9 @@ def billing():
 
     sql = sql.replace('\n', ' ')
 
-    db2.execute(sql)
+    session.execute(sql)
     
-    results = db2.fetchall()
+    results = session.fetchall()
     result_list = []
 
     for column in results:

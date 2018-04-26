@@ -1,10 +1,11 @@
 from flask import Blueprint
-from optilab_bi import db2
+from optilab_bi import connection
 
 actions = Blueprint('rate_service', __name__, url_prefix='/rate_service')
 
 @actions.route('/')
 def hello():
+    session = connection.cursor()
     sql = """
         select distinct ped.pedcodigo pedido, ped.empcodigo empresa, cli.clinomefant, EXTRACT(MONTH from ped.peddtemis) MES,  EXTRACT(YEAR from ped.peddtemis) ANO,
         (select first 1 apdata from acoped where id_pedido = ped.id_pedido and lpcodigo = 1) data_ini,
@@ -21,9 +22,9 @@ def hello():
         and cli.clifornec = 'N'
     """
 
-    db2.execute(sql)
+    session.execute(sql)
     
-    results = db2.fetchall()
+    results = session.fetchall()
     result_list = []
     for row in results:
         rate = {}

@@ -1,13 +1,15 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin
-from optilab_bi import db2
+from optilab_bi import connection
 
 actions = Blueprint('abstract_products', __name__, url_prefix='/abstract_products')
 
 @actions.route('/', methods=['POST'])
 @cross_origin()
 def abstract_products():
+    session = connection.cursor()
+
     # Exemplo do POST
     # {
     #     "products": [
@@ -50,7 +52,7 @@ def abstract_products():
     for product in products:
         sql = """
             select '{}', tpl.tpldescricao ,sum(nfp.nfpqtdade) as qtdade,
-            sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta
+            sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta, nfs.empcodigo
             from notas nfs
             left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                                 and nfs.empcodigo = nfp.empcodigo
@@ -82,7 +84,7 @@ def abstract_products():
         sql = sql + ' and ({})'.format(descriptions)
         sql = sql + process
 
-        sql = sql + ' group by tpl.tpldescricao'
+        sql = sql + ' group by tpl.tpldescricao, nfs.empcodigo'
 
         sql = sql.replace('\n', ' ')
 
@@ -91,19 +93,30 @@ def abstract_products():
         else:
             query = query + ' UNION ALL ' + sql
 
-    db2.execute(query)
+    session.execute(query)
     
-    results = db2.fetchall()
-    result_list = []
+    results = session.fetchall()
+
+    if business_code:
+        response = []
+    else:
+        response = {}
 
     for column in results:
-        rate = {}
+        business = str(column[4])
 
-        rate['label'] = column[0]
-        rate['description'] = column[1]
-        rate['amount'] = column[2]
-        rate['value'] = column[3]
+        product = {}
 
-        result_list.append(rate)
+        product['label'] = column[0]
+        product['description'] = column[1]
+        product['amount'] = column[2]
+        product['value'] = column[3]
+        if business_code:
+            response.append(product)
+        else:
+            if response.get(business):
+                response[business].append(product)
+            else:
+                response[business] = [product] 
 
-    return jsonify(result_list)
+    return jsonify(response)
