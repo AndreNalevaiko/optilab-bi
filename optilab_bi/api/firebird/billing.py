@@ -38,11 +38,7 @@ def billing():
         left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                             and nfs.empcodigo = nfp.empcodigo
         left join produ    pro on pro.procodigo = nfp.procodigo
-        left join marca    mar on pro.marcodigo = mar.marcodigo
-        left join grupo2   gr2 on gr2.gr2codigo = pro.gr2codigo
-        left join grulente gru on gru.glcodigo  = pro.glcodigo
         left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
-        left join grupo4   gr4 on gr4.gr4codigo = pro.gr4codigo
         where  nfs.nfdtemis between '{}' and '{}'  
         and nfs.nfsit ='N'   and nfp.nfcodigo is not null
         and nfs.fiscodigo1 in ('5.101','5.102','5.116','6.116','6.101','6.102','5.124','5.112')

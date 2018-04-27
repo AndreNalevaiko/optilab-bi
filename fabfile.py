@@ -12,3 +12,7 @@ def build():
 @task
 def run():
     local('export $(cat env_file | xargs) && .venv/bin/python3 run.py')
+
+@task
+def run_like_prod():
+    local('export $(cat env_file | xargs) && .venv/bin/gunicorn --config=gunicorn.py run:app')
