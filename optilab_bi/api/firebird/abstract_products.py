@@ -1,7 +1,9 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin
+
 from optilab_bi import connection
+from optilab_bi.api.mysql import configuration, product as product_api
 
 actions = Blueprint('abstract_products', __name__,
                     url_prefix='/abstract_products')
@@ -15,7 +17,7 @@ def abstract_products():
     query = ''
     args = request.get_json()
 
-    products = args.get('products')
+    products = product_api.get_products_abstract()
     period = args.get('period')
     business_code = args.get('business_code')
 
@@ -33,6 +35,8 @@ def abstract_products():
                                  [1], date['end'][0], date['end'][2])
     month = date['start'][1]
 
+    cfop_configuration = configuration.get_config('cfop_vendas')
+
     for product in products:
         sql = """
             select '{}', tpl.tpldescricao ,sum(nfp.nfpqtdade) as qtdade,
@@ -45,28 +49,45 @@ def abstract_products():
             left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
             where  nfs.nfdtemis between '{}' and '{}' and EXTRACT(MONTH FROM nfs.nfdtemis) = {}
             and nfs.nfsit ='N'   and nfp.nfcodigo is not null AND tpl.tpldescricao is not null
-            and nfs.fiscodigo1 in ('5.101','5.102','5.116','6.116','6.101','6.102','5.124','5.112')
+            and nfs.fiscodigo1 in ({})
         """
 
-        sql = sql.format(product['label'], date_start, date_end, month)
+        sql = sql.format(product.label, date_start, date_end, month, cfop_configuration)
 
         if business_code:
             sql = sql + ' and nfs.empcodigo = {}'.format(business_code)
 
-        if product.get('process'):
-            process = " and (tpl.tplprocesso = '{}')".format(product['process'])
+        if product.process:
+            process = " and (tpl.tplprocesso = '{}')".format(product.process)
         else:
             process = ''
 
-        descriptions = ''
-        for desc in product['descriptions']:
-            if descriptions == '':
-                descriptions = "TPL.tpldescricao LIKE '%{}%'".format(desc)
-            else:
-                descriptions = descriptions + \
-                    " or TPL.tpldescricao LIKE '%{}%'".format(desc)
+        str_like_or = ''
+        str_like_and = ''
 
-        sql = sql + ' and ({})'.format(descriptions)
+        if product.like_or:
+            for desc in product.like_or.split(','):
+                if str_like_or == '':
+                    str_like_or = "TPL.tpldescricao LIKE '%{}%'".format(desc)
+                else:
+                    str_like_or = str_like_or + \
+                        " or TPL.tpldescricao LIKE '%{}%'".format(desc)
+
+        if product.like_and:
+            for desc in product.like_and.split(','):
+                if str_like_and == '':
+                    str_like_and = "TPL.tpldescricao LIKE '%{}%'".format(desc)
+                else:
+                    str_like_and = str_like_and + \
+                        " and TPL.tpldescricao LIKE '%{}%'".format(desc)
+
+
+        if str_like_or:
+            sql = sql + ' and ({})'.format(str_like_or)
+        
+        if str_like_and:
+            sql = sql + ' and ({})'.format(str_like_or)
+
         sql = sql + process
 
         sql = sql + ' group by tpl.tpldescricao, nfs.empcodigo, ANO'
@@ -115,7 +136,7 @@ def abstract_brands():
     query = ''
     args = request.get_json()
 
-    products = args.get('products')
+    products = product_api.get_products_abstract()
     period = args.get('period')
     business_code = args.get('business_code')
 
@@ -133,6 +154,8 @@ def abstract_brands():
                                  [1], date['end'][0], date['end'][2])
     month = date['start'][1]
 
+    cfop_configuration = configuration.get_config('cfop_vendas')
+
     for product in products:
         sql = """
             select '{}', sum(nfp.nfpqtdade) as qtdade, 
@@ -145,28 +168,44 @@ def abstract_brands():
             left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
             where  nfs.nfdtemis between '{}' and '{}'  and EXTRACT(MONTH FROM nfs.nfdtemis) = {}
             and nfs.nfsit ='N' and nfp.nfcodigo is not null AND tpl.tpldescricao is not null
-            and nfs.fiscodigo1 in ('5.101','5.102','5.116','6.116','6.101','6.102','5.124','5.112')
+            and nfs.fiscodigo1 in ({})
         """
 
-        sql = sql.format(product['label'], date_start, date_end, month)
+        sql = sql.format(product.label, date_start, date_end, month, cfop_configuration)
 
         if business_code:
             sql = sql + ' and nfs.empcodigo = {}'.format(business_code)
         
-        if product.get('process'):
-            process = " and (tpl.tplprocesso = '{}')".format(product['process'])
+        if product.process:
+            process = " and (tpl.tplprocesso = '{}')".format(product.process)
         else:
             process = ''
 
-        descriptions = ''
-        for desc in product['descriptions']:
-            if descriptions == '':
-                descriptions = "TPL.tpldescricao LIKE '%{}%'".format(desc)
-            else:
-                descriptions = descriptions + \
-                    " or TPL.tpldescricao LIKE '%{}%'".format(desc)
+        str_like_or = ''
+        str_like_and = ''
 
-        sql = sql + ' and ({})'.format(descriptions)
+        if product.like_or:
+            for desc in product.like_or.split(','):
+                if str_like_or == '':
+                    str_like_or = "TPL.tpldescricao LIKE '%{}%'".format(desc)
+                else:
+                    str_like_or = str_like_or + \
+                        " or TPL.tpldescricao LIKE '%{}%'".format(desc)
+        if product.like_and:
+            for desc in product.like_and.split(','):
+                if str_like_and == '':
+                    str_like_and = "TPL.tpldescricao LIKE '%{}%'".format(desc)
+                else:
+                    str_like_and = str_like_and + \
+                        " and TPL.tpldescricao LIKE '%{}%'".format(desc)
+
+
+        if str_like_or:
+            sql = sql + ' and ({})'.format(str_like_or)
+        
+        if str_like_and:
+            sql = sql + ' and ({})'.format(str_like_or)
+
         sql = sql + process
 
         sql = sql + ' group by nfs.empcodigo, ANO '

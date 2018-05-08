@@ -1,7 +1,9 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin
+
 from optilab_bi import connection
+from optilab_bi.api.mysql import configuration
 
 
 actions = Blueprint('billing', __name__, url_prefix='/billing')
@@ -32,6 +34,8 @@ def billing():
     date_start = '{}/{}/{}'.format(date['start'][1], date['start'][0], date['start'][2])
     date_end = '{}/{}/{}'.format(date['end'][1], date['end'][0], date['end'][2])
 
+    cfop_configuration = configuration.get_config('cfop_vendas')
+
     sql = """
         select sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta, nfs.empcodigo
         from notas nfs
@@ -41,11 +45,11 @@ def billing():
         left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
         where  nfs.nfdtemis between '{}' and '{}'  
         and nfs.nfsit ='N'   and nfp.nfcodigo is not null
-        and nfs.fiscodigo1 in ('5.101','5.102','5.116','6.116','6.101','6.102','5.124','5.112')
+        and nfs.fiscodigo1 in ({})
         group by nfs.empcodigo
     """
 
-    sql = sql.format(date_start, date_end)
+    sql = sql.format(date_start, date_end, cfop_configuration)
 
     sql = sql.replace('\n', ' ')
 
