@@ -26,15 +26,10 @@ def billing():
     if not period:
         return 'Period not found', 404
 
-    date = {
-        'start': period['date_start'].split('/'),
-        'end': period['date_end'].split('/')
-    }
-
-    date_start = '{}/{}/{}'.format(date['start'][1], date['start'][0], date['start'][2])
-    date_end = '{}/{}/{}'.format(date['end'][1], date['end'][0], date['end'][2])
-
     cfop_configuration = configuration.get_config('cfop_vendas')
+
+    month = period['month']
+    year = period['year']
 
     sql = """
         select sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta, nfs.empcodigo
@@ -43,13 +38,13 @@ def billing():
                             and nfs.empcodigo = nfp.empcodigo
         left join produ    pro on pro.procodigo = nfp.procodigo
         left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
-        where  nfs.nfdtemis between '{}' and '{}'  
+        where  EXTRACT(MONTH FROM nfs.nfdtemis) = {} and EXTRACT(YEAR FROM nfs.nfdtemis) = {}  
         and nfs.nfsit ='N'   and nfp.nfcodigo is not null
         and nfs.fiscodigo1 in ({})
         group by nfs.empcodigo
     """
 
-    sql = sql.format(date_start, date_end, cfop_configuration)
+    sql = sql.format(month, year, cfop_configuration)
 
     sql = sql.replace('\n', ' ')
 
