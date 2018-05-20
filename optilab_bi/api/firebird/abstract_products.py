@@ -264,7 +264,7 @@ def report_products():
 
     for column in results:
         product = {}
-        product['label'] = column[0]
+        product['label'] = column[0].replace(' ', '')
         product['amount'] = column[1]
         product['value'] = column[2]
         product['business_code'] = column[3]
