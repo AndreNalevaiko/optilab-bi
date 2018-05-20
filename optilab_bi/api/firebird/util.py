@@ -1,6 +1,5 @@
 def resolve_abstract_inconsistency(abstract):
     for emp in abstract:
-        import ipdb; ipdb.set_trace()
         for product in abstract[emp]:
             if len(abstract[emp][product]) < 2:
                 year_to_save = None

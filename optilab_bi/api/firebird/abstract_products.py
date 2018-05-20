@@ -4,7 +4,7 @@ from flask_cors import cross_origin
 
 from optilab_bi import connection
 from optilab_bi.api.mysql import configuration, product as product_api
-from optilab_bi.api.firebird.sqls.products import abstract_products as sql_abs_products
+from optilab_bi.api.firebird.sqls.products import products_varilux, products_crizal, products_kodak, products_trans, products_itop
 from optilab_bi.api.firebird.util import resolve_abstract_inconsistency
 
 actions = Blueprint('abstract_products', __name__,
@@ -211,21 +211,48 @@ def abstract_brands():
     return jsonify(response)
 
 
-@actions.route('/teste', methods=['POST'])
+@actions.route('/report_products', methods=['POST'])
 @cross_origin()
-def teste():
+def report_products():
     session = connection.cursor()
 
     query = ''
     args = request.get_json()
+    
 
     period = args.get('period')
+    brands = args.get('brands')
 
     month = period['month']
     years = period['years']
 
     list_cfop = configuration.get_config('cfop_vendas')
-    sql = sql_abs_products().format(list_cfop=list_cfop, month=month, years=years)
+
+    if brands:
+        sql = ''
+        for brand in brands:
+            sql_brand = ''
+            if brand == 'varilux':
+                sql_brand = products_varilux()
+            if brand == 'kodak':
+                sql_brand = products_kodak()        
+            if brand == 'itop':
+                sql_brand = products_itop()         
+            if brand == 'crizal':
+                sql_brand = products_crizal()
+            if brand == 'trans':
+                sql_brand = products_trans()
+
+            if sql == '':
+                sql = sql_brand
+            else:
+                sql = sql + '\n UNION ALL \n' + sql_brand             
+
+    else:
+        return 'Not brands selected', 400
+
+
+    sql = sql.format(list_cfop=list_cfop, month=month, years=years)
 
     sql = sql.replace('\n', ' ')
 
