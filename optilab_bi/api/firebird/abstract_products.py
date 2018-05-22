@@ -292,6 +292,14 @@ def report_products():
                 
                 response[company][label][year] = [p for p in list_products if p['year'] == year and p['business_code'] == company and p['label'] == label]
                 
-    response = resolve_abstract_inconsistency(response)
+                if not len(response[company][label][year]):
+                    response[company][label][year] = [{
+                        "amount": 0,
+                        "business_code": company,
+                        "label": label,
+                        "value": 0,
+                        "year": year
+                    }]
+    # response = resolve_abstract_inconsistency(response)
 
     return jsonify(response)

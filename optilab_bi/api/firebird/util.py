@@ -1,6 +1,7 @@
 def resolve_abstract_inconsistency(abstract):
     for emp in abstract:
         for product in abstract[emp]:
+            # TODO não funciona, ele possui os 2 anos mais um nao tem dados / reformular
             if len(abstract[emp][product]) < 2:
                 year_to_save = None
                 label_to_save = None
