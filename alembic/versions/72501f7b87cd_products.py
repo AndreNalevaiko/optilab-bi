@@ -40,10 +40,27 @@ def schema_upgrades():
                     sa.Column('show_in_abstract', sa.String(length=32), nullable=False),
                     sa.Column('created_at', sa.DateTime, nullable=False),
                     sa.Column('updated_at', sa.DateTime, nullable=True))
-
+                    
+    op.create_table('report_products',
+                    sa.Column('id', sa.Integer, nullable=False),
+                    sa.PrimaryKeyConstraint('id'),
+                    sa.Column('brand', sa.String(length=128), nullable=False),
+                    sa.Column('label', sa.String(length=128), nullable=False),
+                    sa.Column('status', sa.Enum('OPENED', 'CLOSED'), nullable=False),
+                    sa.Column('business_code', sa.Integer(), nullable=False),
+                    sa.Column('month', sa.Integer(), nullable=False),
+                    sa.Column('latest_year', sa.Integer(), nullable=False),
+                    sa.Column('current_year', sa.Integer(), nullable=False),
+                    sa.Column('qtd_latest_year', sa.Integer(), nullable=False),
+                    sa.Column('value_latest_year', sa.DECIMAL(precision=17, scale=2), nullable=False),
+                    sa.Column('qtd_current_year', sa.Integer(), nullable=False),
+                    sa.Column('value_current_year', sa.DECIMAL(precision=17, scale=2), nullable=False),
+                    sa.Column('created_at', sa.DateTime, nullable=False),
+                    sa.Column('updated_at', sa.DateTime, nullable=True))
 
 def schema_downgrades():
     op.drop_table('product')
+    op.drop_table('report_products')
 
 
 def data_upgrades():
