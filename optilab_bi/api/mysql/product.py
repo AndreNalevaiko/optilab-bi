@@ -19,7 +19,7 @@ def create_api(api):
     api.create_api(ReportProducts,
                    methods=['GET'],
                    url_prefix='/%s' % API_VERSION,
-                   results_per_page=20,
+                   results_per_page=0,
                    primary_key='id',
                    preprocessors={
                    },
