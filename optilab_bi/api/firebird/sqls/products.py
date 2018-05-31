@@ -15,7 +15,7 @@ def sql_all_products():
     or TPL.tpldescricao LIKE '%ACCLI%' or TPL.tpldescricao LIKE '%PHOTO%' ) and pro.gr4codigo <>  1
     group by   ANO,  MES,  business_code
     UNION ALL
-    select 'Transitions', 'Trans Varilux', sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
+    select 'Transitions', 'Trans_Varilux', sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
     iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
