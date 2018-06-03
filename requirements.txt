@@ -7,3 +7,5 @@ PyMySQL==0.7.11
 requests==2.18.4
 alembic==0.9.8
 Flask-Restless==0.17.0
+pandas==0.19.2
+XlsxWriter==1.0.5

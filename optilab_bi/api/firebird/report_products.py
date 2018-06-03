@@ -1,12 +1,15 @@
 from datetime import datetime
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, Response, send_file
 from flask_cors import cross_origin
+import pandas
+import io
 
 from optilab_bi import connection, db
 from optilab_bi.model.product import ReportProducts
 from optilab_bi.api.mysql import configuration, product as product_api
 from optilab_bi.api.firebird.sqls.products import sql_all_products
 from optilab_bi.api.firebird.util import resolve_abstract_inconsistency
+from optilab_bi.helpers import to_dict
 
 actions = Blueprint('report_products', __name__,
                     url_prefix='/report_products')
@@ -100,4 +103,65 @@ def report_products():
 
     db.session.commit()
 
-    return 'OK', 200
+    results = ReportProducts.query.filter(
+        ReportProducts.current_year == current_year,
+        ReportProducts.month == month
+    ).all()
+
+    results = [to_dict(report) for report in results]
+
+    return jsonify(results)
+
+@actions.route('/_export_csv', methods=['POST'])
+@cross_origin()
+def export_csv():
+    args = request.get_json()
+
+    current_year = args.get('current_year')
+    month = args.get('month')
+    # current_year = '2018'
+    # month = '02'
+
+    result = ReportProducts.query.filter(
+        ReportProducts.current_year == current_year,
+        ReportProducts.month == month
+    ).all()
+
+    data = {
+        'marca': [],
+        'lente': [],
+        'empresa': [],
+        'mes': [],
+        'ano_atual': [],
+        'ano_anterior': [],
+        'qtd_ano_atual': [],
+        'valor_ano_atual': [],
+        'qtd_ano_anterior': [],
+        'valor_ano_anterior': []
+    }
+
+    for report in result:
+        data['marca'].append(report.brand)
+        data['lente'].append(report.label)
+        data['empresa'].append(report.business_code)
+        data['mes'].append(report.month)
+        data['ano_atual'].append(report.current_year)
+        data['ano_anterior'].append(report.latest_year)
+        data['qtd_ano_atual'].append(report.qtd_current_year)
+        data['valor_ano_atual'].append(report.value_current_year)
+        data['qtd_ano_anterior'].append(report.qtd_latest_year)
+        data['valor_ano_anterior'].append(report.value_latest_year)
+
+    data_frame = pandas.DataFrame(data=data)
+
+    output = io.BytesIO()
+
+    writer = pandas.ExcelWriter(output, engine='xlsxwriter')
+
+    data_frame.to_excel(writer, sheet_name='ReportProducts')
+
+    writer.save()
+
+    xlsx_data = output.getvalue()
+
+    return send_file(io.BytesIO(xlsx_data),as_attachment=True, attachment_filename='report.xlsx')
