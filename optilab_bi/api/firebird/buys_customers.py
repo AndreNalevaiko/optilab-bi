@@ -9,16 +9,15 @@ def build_result(brute_list):
     copy_list = [item for item in brute_list]
 
     result = []
-    print('teste')
 
     for item in brute_list:
         item_result = {
             'cli_codigo': item['cli_codigo'],
             'cli_nome_fan': item['cli_nome_fan'],
+            'emp_code': item['emp_code'],
             'latest_value': None,
             'current_value': None,
         }
-        import ipdb; ipdb.set_trace()
         if item['type'] == 'current':
             item_result['current_value'] = item['value']
         else:
@@ -28,27 +27,22 @@ def build_result(brute_list):
             if item['type'] == 'current':
                 if aux['cli_codigo'] == item['cli_codigo'] and \
                 aux['emp_code'] == item['emp_code'] and aux['type'] == 'latest':
-                    import ipdb; ipdb.set_trace()
                     item_result['latest_value'] = aux['value']
                     
             else:
                 if aux['cli_codigo'] == item['cli_codigo'] and \
                 aux['emp_code'] == item['emp_code'] and aux['type'] == 'current':
-                    import ipdb; ipdb.set_trace()
                     item_result['current_value'] = aux['value']
         
         result.append(item_result)
 
-    import ipdb; ipdb.set_trace()
-
-    result_teste = []
+    result_final = []
     for r in result:
-        if r not in result_teste:
-            result_teste.append(r)
+        if r not in result_final:
+            result_final.append(r)
 
-    import ipdb; ipdb.set_trace()
 
-    return result
+    return result_final
 
 @actions.route('/_eval', methods=['POST'])
 def _eval():
@@ -85,19 +79,10 @@ def _eval():
         rate['month'] = row[3]
         rate['year'] = row[4]
         rate['emp_code'] = row[5]
-        rate['type'] = 'current ' if row[4] == current_year and row[3] == current_month else 'latest' 
+        rate['type'] = 'current' if row[4] == int(current_year) and row[3] == int(current_month) else 'latest' 
 
         result_list.append(rate)
-
-    teste = build_result(result_list)
-
-    list_current = [item for item in result_list if item['year'] == current_year and item['month'] == current_year]
-
-    if int(current_month) == 1:
-        list_latest = [item for item in result_list if item['year'] == str(int(current_year - 1)) and item['month'] == latest_month]
-    else:
-        list_latest = [item for item in result_list if item['year'] == current_year and item['month'] == latest_month]
-
     
+    response = jsonify(build_result(result_list))
 
-    return jsonify(result_list)
+    return response
