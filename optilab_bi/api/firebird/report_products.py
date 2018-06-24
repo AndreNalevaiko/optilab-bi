@@ -112,9 +112,9 @@ def report_products():
 
     return jsonify(results)
 
-@actions.route('/_export_csv', methods=['POST'])
+@actions.route('/_export_xlsx', methods=['POST'])
 @cross_origin()
-def export_csv():
+def export_xlsx():
     args = request.get_json()
 
     current_year = args.get('current_year')
@@ -158,10 +158,12 @@ def export_csv():
 
     writer = pandas.ExcelWriter(output, engine='xlsxwriter')
 
-    data_frame.to_excel(writer, sheet_name='ReportProducts')
+    data_frame.to_excel(writer, sheet_name='Planilha1')
 
     writer.save()
 
     xlsx_data = output.getvalue()
 
-    return send_file(io.BytesIO(xlsx_data),as_attachment=True, attachment_filename='report.xlsx')
+    filename = 'report_products_{}_{}.xlsx'.format(month, current_year)
+
+    return send_file(io.BytesIO(xlsx_data),as_attachment=True, attachment_filename=filename)

@@ -46,6 +46,8 @@ def build_result(brute_list):
     return result_final
 
 def calc_amonts(result_day, result_month, result_lates_year, filters):
+    business_codes = []
+
     result = {
         'current_day': [],
         'latest_day': [],
@@ -60,6 +62,9 @@ def calc_amonts(result_day, result_month, result_lates_year, filters):
             result['current_day'].append(obj)
         else:
             result['latest_day'].append(obj)
+
+        if obj['emp_code'] not in business_codes:
+            business_codes.append(obj['emp_code'])
             
     for row in result_month:
         obj = {'qtd': row[0], 'emp_code': row[1]}
@@ -68,8 +73,11 @@ def calc_amonts(result_day, result_month, result_lates_year, filters):
         else:
             result['latest_month'].append(obj)
 
+        if obj['emp_code'] not in business_codes:
+            business_codes.append(obj['emp_code'])
+
     emp_codes = list(set([r[1] for r in result_lates_year]))
-    import ipdb; ipdb.set_trace()
+    
     for emp_code in emp_codes:
         list_emp = [r[0] for r in result_lates_year if r[1] == emp_code]
         average = sum(list_emp)/len(list_emp)
@@ -77,7 +85,20 @@ def calc_amonts(result_day, result_month, result_lates_year, filters):
         obj = {'average': average, 'emp_code': emp_code}
         result['average_latest_year'].append(obj)
 
-    return result
+        if emp_code not in business_codes:
+            business_codes.append(emp_code)
+    
+    response = {}
+    for emp_code in business_codes:
+        response[str(emp_code)] = {
+            'current_day': next((obj['qtd'] for obj in result['current_day'] if obj['emp_code'] == emp_code), None),
+            'latest_day': next((obj['qtd'] for obj in result['latest_day'] if obj['emp_code'] == emp_code), None),
+            'current_month': next((obj['qtd'] for obj in result['current_month'] if obj['emp_code'] == emp_code), None),
+            'latest_month': next((obj['qtd'] for obj in result['latest_month'] if obj['emp_code'] == emp_code), None),
+            'average_latest_year': next((obj['average'] for obj in result['average_latest_year'] if obj['emp_code'] == emp_code), None)
+        }
+
+    return response
         
 
 
@@ -151,6 +172,7 @@ def _amount():
     latest_year = str(int(current_year) - 1)
     current_month = args.get('month')
     latest_month = str(int(current_month) - 1)
+    # TODO melhorar logica para pega o latest day como latest util day
     current_day = args.get('day')
     latest_day = str(int(current_day) - 1)
 
