@@ -112,19 +112,20 @@ def report_products():
 
     return jsonify(results)
 
-@actions.route('/_export_xlsx', methods=['POST'])
+@actions.route('/_export_xlsx', methods=['GET'])
 @cross_origin()
 def export_xlsx():
-    args = request.get_json()
+    current_year = request.args.get('year')
+    month = request.args.get('month')
+    emp_code = request.args.get('emp_code')
 
-    current_year = args.get('current_year')
-    month = args.get('month')
-    # current_year = '2018'
-    # month = '02'
+    if not current_year or not month or not emp_code:
+        return 'bad request', 400
 
     result = ReportProducts.query.filter(
         ReportProducts.current_year == current_year,
-        ReportProducts.month == month
+        ReportProducts.month == month,
+        ReportProducts.business_code == emp_code
     ).all()
 
     data = {
@@ -166,4 +167,4 @@ def export_xlsx():
 
     filename = 'report_products_{}_{}.xlsx'.format(month, current_year)
 
-    return send_file(io.BytesIO(xlsx_data),as_attachment=True, attachment_filename=filename)
+    return send_file(io.BytesIO(xlsx_data), as_attachment=True, attachment_filename=filename)
