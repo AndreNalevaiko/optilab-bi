@@ -24,27 +24,34 @@ def return_latest(list_products, brand, label, business_code, year):
         result = {'amount': 0,'value': 0}
     return result
 
+
 @actions.route('/_generate', methods=['POST'])
 @cross_origin()
 def report_products():
     session = connection.cursor()
 
     query = ''
+
     args = request.get_json()
     
-    period = args.get('period')
-    brands = args.get('brands')
+    if args.get('period') and args.get('brands'):
+        period = args.get('period')
+        brands = args.get('brands')
 
-    month = period['month']
-    years = period['years']
-    is_new_month = datetime.now().day == 1
+        month = period['month']
+        years = period['years']
+        
+    else:
+        date_now = datetime.now()
+
+        month = str(date_now.month)
+        years = '{},{}'.format(str(date_now.year), str(date_now.year - 1))
+        is_new_month = date_now.day == 1
 
     list_cfop = configuration.get_config('cfop_vendas')
 
     sql = sql_all_products()
-
     sql = sql.format(list_cfop=list_cfop, month=month, years=years)
-
     sql = sql.replace('\n', ' ')
 
     session.execute(sql)
