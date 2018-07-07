@@ -34,13 +34,13 @@ def report_products():
 
     args = request.get_json()
     
-    if args.get('period') and args.get('brands'):
+    if args:
         period = args.get('period')
         brands = args.get('brands')
 
         month = period['month']
         years = period['years']
-        
+
     else:
         date_now = datetime.now()
 
