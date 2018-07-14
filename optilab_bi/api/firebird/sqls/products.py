@@ -371,7 +371,7 @@ def sql_all_products():
     or TPL.tpldescricao LIKE '%C/AR PRIME%')
     group by   ANO,  MES,  business_code
     UNION ALL
-    select 'Crizal', 'Crizalç_Vs_Dig',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
+    select 'Crizal', 'Crizal_Vs_Dig',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
     iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
