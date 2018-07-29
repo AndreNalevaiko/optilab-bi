@@ -1,8 +1,11 @@
+from datetime import datetime
 from flask import Blueprint, jsonify, request
-from optilab_bi import connection
+from optilab_bi import connection, db
 from optilab_bi.api.firebird.sqls.buys_customer import eval_months_buys, \
-active_current_previous_month, active_latest_year, active_today_yesterday
+active_current_previous_month, active_latest_year, active_today_yesterday, \
+active_today
 from optilab_bi.api.mysql import configuration
+from optilab_bi.model import NumberActiveCustomers, CustomerBillingReport
 
 actions = Blueprint('/customers', __name__, url_prefix='/customers')
 
@@ -15,7 +18,7 @@ def build_result(brute_list):
         item_result = {
             'cli_codigo': item['cli_codigo'],
             'cli_nome_fan': item['cli_nome_fan'],
-            'emp_code': item['emp_code'],
+            'business_code': item['business_code'],
             'latest_value': None,
             'current_value': None,
         }
@@ -27,12 +30,12 @@ def build_result(brute_list):
         for aux in copy_list:
             if item['type'] == 'current':
                 if aux['cli_codigo'] == item['cli_codigo'] and \
-                aux['emp_code'] == item['emp_code'] and aux['type'] == 'latest':
+                aux['business_code'] == item['business_code'] and aux['type'] == 'latest':
                     item_result['latest_value'] = aux['value']
                     
             else:
                 if aux['cli_codigo'] == item['cli_codigo'] and \
-                aux['emp_code'] == item['emp_code'] and aux['type'] == 'current':
+                aux['business_code'] == item['business_code'] and aux['type'] == 'current':
                     item_result['current_value'] = aux['value']
         
         result.append(item_result)
@@ -88,31 +91,29 @@ def calc_amonts(result_day, result_month, result_lates_year, filters):
         if emp_code not in business_codes:
             business_codes.append(emp_code)
     
-    response = {}
+    response = []
+
     for emp_code in business_codes:
-        response[str(emp_code)] = {
+        response.append({
             'current_day': next((obj['qtd'] for obj in result['current_day'] if obj['emp_code'] == emp_code), None),
             'latest_day': next((obj['qtd'] for obj in result['latest_day'] if obj['emp_code'] == emp_code), None),
             'current_month': next((obj['qtd'] for obj in result['current_month'] if obj['emp_code'] == emp_code), None),
             'latest_month': next((obj['qtd'] for obj in result['latest_month'] if obj['emp_code'] == emp_code), None),
-            'average_latest_year': next((obj['average'] for obj in result['average_latest_year'] if obj['emp_code'] == emp_code), None)
-        }
+            'average_latest_year': next((obj['average'] for obj in result['average_latest_year'] if obj['emp_code'] == emp_code), None),
+            'business_code': int(emp_code)
+        })
 
     return response
         
 
-
-@actions.route('/_eval', methods=['POST'])
-def _eval():
+def _eval(date):
     session = connection.cursor()
     sql = eval_months_buys()
 
-    args = request.get_json()
-
     list_cfop = configuration.get_config('cfop_vendas')
 
-    current_month = args.get('month')
-    current_year = args.get('year')
+    current_month = date.get('month')
+    current_year = date.get('year')
     
     if int(current_month) == 1:
         latest_month = '12'
@@ -136,7 +137,7 @@ def _eval():
         rate['value'] = row[2]
         rate['month'] = row[3]
         rate['year'] = row[4]
-        rate['emp_code'] = row[5]
+        rate['business_code'] = row[5]
         rate['type'] = 'current' if row[4] == int(current_year) and row[3] == int(current_month) else 'latest' 
 
         result_list.append(rate)
@@ -153,27 +154,49 @@ def _eval():
         else:
             item['variation'] = (item['current_value'] / item['latest_value']) - 1
 
+        customer_billing_report = CustomerBillingReport.query.filter(
+            CustomerBillingReport.business_code == item['business_code'],
+            CustomerBillingReport.customer_code == item['cli_codigo'],
+            CustomerBillingReport.customer_name == item['cli_nome_fan'],
+            CustomerBillingReport.month == int(current_month),
+            CustomerBillingReport.year == int(current_year)
+        ).one_or_none()
+
+        if not customer_billing_report:
+
+            customer_billing_report = CustomerBillingReport()
+            customer_billing_report.business_code = item['business_code']
+            customer_billing_report.customer_code = item['cli_codigo']
+            customer_billing_report.customer_name = item['cli_nome_fan']
+            customer_billing_report.month = int(current_month)
+            customer_billing_report.year = int(current_year)
+
+        customer_billing_report.current_value = item['current_value']
+        customer_billing_report.latest_value = item['latest_value']
+        customer_billing_report.variation = item['variation']
+
+        db.session.add(customer_billing_report)
+    
+    db.session.commit()
+
     return jsonify(response)
 
 
-@actions.route('/_amount', methods=['POST'])
-def _amount():
+def _amount(date):
     session = connection.cursor()
 
     sql_month = active_current_previous_month()
     sql_day = active_today_yesterday()
     sql_latest_year = active_latest_year()
 
-    args = request.get_json()
-
     list_cfop = configuration.get_config('cfop_vendas')
 
-    current_year = args.get('year')
+    current_year = date.get('year')
     latest_year = str(int(current_year) - 1)
-    current_month = args.get('month')
+    current_month = date.get('month')
     latest_month = str(int(current_month) - 1)
+    current_day = date.get('day')
     # TODO melhorar logica para pega o latest day como latest util day
-    current_day = args.get('day')
     latest_day = str(int(current_day) - 1)
 
     sql_month = sql_month.format(list_cfop=list_cfop, current_year=current_year,\
@@ -202,7 +225,95 @@ def _amount():
         'latest_day': latest_day,
     }
 
-    result = calc_amonts(result_day, result_month, result_latest_year, filters)
+    amounts = calc_amonts(result_day, result_month, result_latest_year, filters)
 
-    return jsonify(result)
+    date_record = datetime.now().replace(
+        day=int(current_day),
+        month=int(current_month),
+        year=int(current_year)
+    ).date()
     
+    for amount in amounts:
+
+        number_active_customers = NumberActiveCustomers.query.filter(
+            NumberActiveCustomers.business_code == amount['business_code'],
+            NumberActiveCustomers.date == date_record,
+        ).one_or_none()
+
+        if not number_active_customers:
+            number_active_customers = NumberActiveCustomers()
+            number_active_customers.business_code = amount['business_code']
+            number_active_customers.date = date_record
+        
+        number_active_customers.number_current_day = amount['current_day']
+        number_active_customers.number_latest_day = amount['latest_day']
+        number_active_customers.number_current_month = amount['current_month']
+        number_active_customers.number_latest_month = amount['latest_month']
+        number_active_customers.average_latest_year = amount['average_latest_year']
+
+        db.session.add(number_active_customers)
+
+    db.session.commit()
+
+
+def generate_current_day_amount(date):
+    session = connection.cursor()
+
+    sql_day = active_today()
+
+    list_cfop = configuration.get_config('cfop_vendas')
+
+    current_year = date.get('year')
+    current_month = date.get('month')
+    current_day = date.get('day')
+
+    sql_day = sql_day.format(list_cfop=list_cfop, current_day=current_day, \
+                            current_month=current_month, current_year=current_year)
+
+    session.execute(sql_day)
+    result_day = session.fetchall()
+
+    result = []
+
+    for row in result_day:
+        obj = {
+            'qtd': row[0], 
+            'business_code': row[1],
+        }
+
+        result.append(obj)
+
+    date_record = datetime.now().replace(
+        day=int(current_day),
+        month=int(current_month),
+        year=int(current_year)
+    ).date()
+
+    for item in result:
+        number_active_customers = NumberActiveCustomers.query.filter(
+            NumberActiveCustomers.business_code == item['business_code'],
+            NumberActiveCustomers.date == date_record,
+        ).one_or_none()
+
+        if number_active_customers:
+            number_active_customers.number_current_day = item['qtd']
+
+        db.session.add(number_active_customers)
+
+    db.session.commit()    
+    
+@actions.route('/_generate', methods=['POST'])
+def _generate():
+    date = request.get_json()
+
+    if not date:
+        date = {
+            'year': datetime.now().year,
+            'month': datetime.now().month,
+            'day': datetime.now().day,
+        }
+
+    _amount(date)
+    _eval(date)
+
+    return 'OK', 200

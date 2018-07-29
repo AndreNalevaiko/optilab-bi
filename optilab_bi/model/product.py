@@ -12,13 +12,13 @@ class ReportStatus(Enum):
     CLOSED = 'CLOSED'
     
 
-class Product(ModelBase, db.Model):
-    label = db.Column(db.String(64), nullable=False)
-    like_or = db.Column(db.String(256), nullable=True)
-    like_and = db.Column(db.String(256), nullable=True)
-    color = db.Column(db.Integer(), nullable=True)
-    process = db.Column(db.String(32), nullable=True)
-    show_in_abstract = db.Column(db.Boolean, nullable=False)
+# class Product(ModelBase, db.Model):
+#     label = db.Column(db.String(64), nullable=False)
+#     like_or = db.Column(db.String(256), nullable=True)
+#     like_and = db.Column(db.String(256), nullable=True)
+#     color = db.Column(db.Integer(), nullable=True)
+#     process = db.Column(db.String(32), nullable=True)
+#     show_in_abstract = db.Column(db.Boolean, nullable=False)
 
 
 class ReportProducts(ModelBase, db.Model):
@@ -35,8 +35,8 @@ class ReportProducts(ModelBase, db.Model):
     value_current_year = db.Column(db.DECIMAL(asdecimal=False, precision=17, scale=2), nullable=False)
     
 
-event.listen(Product, 'before_insert', input_audit_data_on_insert)
-event.listen(Product, 'before_update', input_audit_data_on_update)
+# event.listen(Product, 'before_insert', input_audit_data_on_insert)
+# event.listen(Product, 'before_update', input_audit_data_on_update)
 
 event.listen(ReportProducts, 'before_insert', input_audit_data_on_insert)
 event.listen(ReportProducts, 'before_update', input_audit_data_on_update)

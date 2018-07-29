@@ -13,6 +13,19 @@ def eval_months_buys():
     group by emp_code, num_month, CLICODIGO, NOMEFANT, num_year
     """
 
+def active_today():
+    return """
+    /*DIA ATUAL*/
+    select COUNT(distinct ped.CLICODIGO), iif( cli.funcodigo = 858, 5, ped.empcodigo ) emp_code
+    from pedid ped
+    left join clien cli on cli.CLICODIGO = ped.CLICODIGO
+    where  1 = 1
+    AND ped.PEDDTEMIS = '{current_month}-{current_day}-{current_year}'
+    and (ped.FISCODIGO1 in ({list_cfop}) or ped.FISCODIGO2 in ({list_cfop}))
+    group by emp_code
+    order by emp_code asc
+    """
+
 def active_today_yesterday():
     return """
     /*DIA ATUAL E DIA ANTERIOR*/
