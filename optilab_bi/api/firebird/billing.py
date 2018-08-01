@@ -32,16 +32,18 @@ def billing():
     year = period['year']
 
     sql = """
-        select sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta, nfs.empcodigo
+        select sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta, 
+        iif( cli.funcodigo = 858, 5, nfs.empcodigo ) empcodigo
         from notas nfs
         left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                             and nfs.empcodigo = nfp.empcodigo
         left join produ    pro on pro.procodigo = nfp.procodigo
         left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
+        left join clien    cli on cli.clicodigo = nfs.clicodigo
         where  EXTRACT(MONTH FROM nfs.nfdtemis) = {} and EXTRACT(YEAR FROM nfs.nfdtemis) = {}  
         and nfs.nfsit ='N'   and nfp.nfcodigo is not null
         and nfs.fiscodigo1 in ({})
-        group by nfs.empcodigo
+        group by empcodigo
     """
 
     sql = sql.format(month, year, cfop_configuration)
