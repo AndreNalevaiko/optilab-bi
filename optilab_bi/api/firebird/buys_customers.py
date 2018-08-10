@@ -298,7 +298,7 @@ def generate_current_day_amount(date):
         if number_active_customers:
             number_active_customers.number_current_day = item['qtd']
 
-        db.session.add(number_active_customers)
+            db.session.add(number_active_customers)
 
     db.session.commit()    
     
