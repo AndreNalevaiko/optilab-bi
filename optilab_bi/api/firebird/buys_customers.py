@@ -245,11 +245,11 @@ def _amount(date):
             number_active_customers.business_code = amount['business_code']
             number_active_customers.date = date_record
         
-        number_active_customers.number_current_day = amount['current_day']
-        number_active_customers.number_latest_day = amount['latest_day']
-        number_active_customers.number_current_month = amount['current_month']
-        number_active_customers.number_latest_month = amount['latest_month']
-        number_active_customers.average_latest_year = amount['average_latest_year']
+        number_active_customers.number_current_day = amount.get('current_day') or 0
+        number_active_customers.number_latest_day = amount.get('latest_day') or 0
+        number_active_customers.number_current_month = amount.get('current_month') or 0
+        number_active_customers.number_latest_month = amount.get('latest_month') or 0
+        number_active_customers.average_latest_year = amount.get('average_latest_year') or 0
 
         db.session.add(number_active_customers)
 
@@ -296,7 +296,7 @@ def generate_current_day_amount(date):
         ).one_or_none()
 
         if number_active_customers:
-            number_active_customers.number_current_day = item['qtd']
+            number_active_customers.number_current_day = item.get('qtd') or 0
 
             db.session.add(number_active_customers)
 
