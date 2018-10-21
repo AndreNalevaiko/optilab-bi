@@ -5,7 +5,7 @@ from flask_cors import CORS
 from flask_restless.manager import APIManager
 from optilab_bi import config, db
 from optilab_bi.api.firebird import rate_service, billing, report_products, buys_customers, kpi
-from optilab_bi.api.mysql import budget, configuration, user, product, customer, kpi as kpi_api
+from optilab_bi.api.mysql import budget, configuration, user, product, customer, kpi as kpi_api, agreed_date_group
 import fdb
 
 
@@ -24,6 +24,7 @@ def create_apis(api):
     product.create_api(api)
     customer.create_api(api)
     kpi_api.create_api(api)
+    agreed_date_group.create_api(api)
 
 LOGGER = logging.getLogger(__name__)
 

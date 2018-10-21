@@ -1,44 +1,60 @@
-from flask import Blueprint
+from datetime import date, timedelta, datetime
+import numpy as np
+
+from flask import Blueprint, jsonify
 from optilab_bi import connection
+from optilab_bi.api.firebird.sqls.rate_service import group_by_types
 
 actions = Blueprint('rate_service', __name__, url_prefix='/rate_service')
 
-@actions.route('/')
-def hello():
+@actions.route('/_generate', methods=['GET'])
+def rate_service():
     session = connection.cursor()
-    sql = """
-        select distinct ped.pedcodigo pedido, ped.empcodigo empresa, cli.clinomefant, EXTRACT(MONTH from ped.peddtemis) MES,  EXTRACT(YEAR from ped.peddtemis) ANO,
-        (select first 1 apdata from acoped where id_pedido = ped.id_pedido and lpcodigo = 1) data_ini,
-        (select first 1 aphora from acoped where id_pedido = ped.id_pedido and lpcodigo = 1) hora_ini,
-        (select first 1 apdata from acoped where id_pedido = ped.id_pedido and lpcodigo = 10) data_fim,
-        (select first 1 aphora from acoped where id_pedido = ped.id_pedido and lpcodigo = 10) hora_fim
-        from pedid ped
-        left join clien   cli on cli.clicodigo = ped.clicodigo
-        where
-        ped.peddtemis between '01/01/2018' and '03/31/2018' AND ped.pedcodigo like '%000'
-        and (select first 1 apdata from acoped where id_pedido = ped.id_pedido and lpcodigo = 1) is not null
-        and (select first 1 apdata from acoped where id_pedido = ped.id_pedido and lpcodigo = 10) is not null
-        and (select first 1 apdata from acoped where id_pedido = ped.id_pedido and lpcodigo = 28) is null
-        and cli.clifornec = 'N'
-    """
+    sql = group_by_types()
+    sql = sql.format(data_ini='01/01/2018', data_final='01/30/2018')
 
     session.execute(sql)
     
     results = session.fetchall()
     result_list = []
+
     for row in results:
         rate = {}
 
-        rate['order'] = row[0]
-        rate['business'] = row[1]
-        rate['cli_nome_fan'] = row[2]
-        rate['month'] = row[3]
-        rate['year'] = row[4]
-        rate['start_date'] = row[5]
-        rate['start_hour'] = row[6]
-        rate['end_date'] = row[7]
-        rate['end_hour'] = row[8]
+        rate['type'] = row[0].replace(' ', '')
+        rate['order'] = row[1]
+        rate['product'] = row[2]
+        rate['business'] = row[3]
+        rate['cli_nome_fan'] = row[4]
+        rate['month'] = row[5]
+        rate['year'] = row[6]
+
+        rate['start_date'] = row[7].replace(hour=row[8].hour, second=row[8].second, minute=row[8].minute)
+
+        rate['end_date'] = row[9].replace(hour=row[10].hour, second=row[10].second, minute=row[10].minute)
+
+        dif_date = (rate['end_date'] - rate['start_date'])
+
+        if dif_date.days > 0:
+            rate['hours'] = (dif_date.days * 24) + dif_date.seconds / 60 / 60
+        else:
+            rate['hours'] = dif_date.seconds / 60 / 60
+
+        rate['days'] = dif_date.days
+
+        date_ini_ord = row[7].toordinal()
+        date_end_ord = row[9].toordinal()
+        weekend_days = 0
+
+        for d_ord in range(date_ini_ord, date_end_ord):
+            d = date.fromordinal(d_ord)
+            if (d.weekday() == 6) or (d.weekday() == 5):
+                weekend_days = weekend_days + 1
+
+        rate['working_days'] = dif_date.days - weekend_days
+        rate['working_hours'] = (rate['working_days'] * 24) + dif_date.seconds / 60 / 60
+
 
         result_list.append(rate)
 
-    return result_list[0]
+    return jsonify(result_list)
