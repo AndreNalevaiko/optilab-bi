@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Blueprint, jsonify, request
 from optilab_bi import connection, db
 from optilab_bi.api.firebird.sqls.buys_customer import eval_months_buys, \
@@ -307,10 +307,11 @@ def _generate():
     date = request.get_json()
 
     if not date:
+        date_now = datetime.now() - timedelta(days=1)
         date = {
-            'year': datetime.now().year,
-            'month': datetime.now().month,
-            'day': datetime.now().day,
+            'year': date_now.year,
+            'month': date_now.month,
+            'day': date_now.day,
         }
 
     _amount(date)

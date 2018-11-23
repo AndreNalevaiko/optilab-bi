@@ -12,29 +12,59 @@ actions = Blueprint('/kpi', __name__, url_prefix='/kpi')
 def _consolidate_result(qtd_pedid, vlr_pedid, qtd_pecas):
     # business_codes = set([i[1] for i in qtd_pedid] + \ 
     #     [i[1] for i in qtd_pedid] + [i[1] for i in qtd_pedid])
-    
+
     result = {}
 
     for row in qtd_pedid:
         if not result.get(row[1]):
             result[row[1]] = {}
 
+        if not result.get(0):
+            result[0] = {
+                'qtd_pedid': 0,
+                'vlr_pedid': 0,
+                'qtd_pecas': 0,
+                'business_code': 0
+            }
+
         result[row[1]]['qtd_pedid'] = row[0]
         result[row[1]]['business_code'] = int(row[1])
+
+        result[0]['qtd_pedid'] += row[0]
 
     for row in vlr_pedid:
         if not result.get(row[1]):
             result[row[1]] = {}
 
+        if not result.get(0):
+            result[0] = {
+                'qtd_pedid': 0,
+                'vlr_pedid': 0,
+                'qtd_pecas': 0,
+                'business_code': 0
+            }
+
         result[row[1]]['vlr_pedid'] = row[0]
         result[row[1]]['business_code'] = int(row[1])
+
+        result[0]['vlr_pedid'] += row[0]
 
     for row in qtd_pecas:
         if not result.get(row[1]):
             result[row[1]] = {}
 
+        if not result.get(0):
+            result[0] = {
+                'qtd_pedid': 0,
+                'vlr_pedid': 0,
+                'qtd_pecas': 0,
+                'business_code': 0
+            }
+
         result[row[1]]['qtd_pecas'] = row[0]
         result[row[1]]['business_code'] = int(row[1])
+
+        result[0]['qtd_pecas'] += row[0]
 
     return result
 
@@ -44,10 +74,11 @@ def _generate():
     date = request.get_json()
 
     if not date:
+        date_now = datetime.now() - timedelta(days=1)
         date = {
-            'year': datetime.now().year,
-            'month': datetime.now().month,
-            'day': datetime.now().day,
+            'year': date_now.year,
+            'month': date_now.month,
+            'day': date_now.day,
         }
 
     session = connection.cursor()

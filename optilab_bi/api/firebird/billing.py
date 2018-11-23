@@ -55,12 +55,21 @@ def billing():
     results = session.fetchall()
     result_list = []
 
+    rate_global = {
+        'business': 0,
+        'value': 0
+    }
+
     for column in results:
         rate = {}
 
         rate['value'] = column[0]
         rate['business'] = column[1]
 
+        rate_global['value'] = rate_global['value'] + column[0]
+
         result_list.append(rate)
+    
+    result_list.append(rate_global)
 
     return jsonify(result_list)

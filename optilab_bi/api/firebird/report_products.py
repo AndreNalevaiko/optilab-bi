@@ -1,8 +1,8 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Blueprint, jsonify, request, Response, send_file
 from flask_cors import cross_origin
 import pandas
-import io
+import io, copy
 
 from optilab_bi import connection, db
 from optilab_bi.model.product import ReportProducts
@@ -14,6 +14,23 @@ from optilab_bi.helpers import to_dict
 actions = Blueprint('report_products', __name__,
                     url_prefix='/report_products')
 
+
+def append_in_list_global(global_list, original_product):
+    product = copy.deepcopy(original_product)
+    index = None
+    for idx, prod in enumerate(global_list):
+        if prod['brand'] == product['brand'] and prod['label'] == product['label'] \
+            and prod['month'] == product['month'] and prod['year'] == product['year']:
+            index = idx
+    
+    if index:
+        global_list[index]['amount'] += product['amount']
+        global_list[index]['value'] += product['value']
+    else:
+        product['business_code'] = 0
+        global_list.append(product)
+
+    return global_list
 
 def return_latest(list_products, brand, label, business_code, year):
     result = [record for record in list_products if record['year'] == year and 
@@ -36,17 +53,15 @@ def report_products():
     
     if args:
         period = args.get('period')
-        brands = args.get('brands')
 
         month = period['month']
         years = period['years']
 
     else:
-        date_now = datetime.now()
+        date_now = datetime.now() - timedelta(days=1)
 
         month = str(date_now.month)
         years = '{},{}'.format(str(date_now.year), str(date_now.year - 1))
-        is_new_month = date_now.day == 1
 
     list_cfop = configuration.get_config('cfop_vendas')
 
@@ -67,6 +82,8 @@ def report_products():
     results = result_pt_1 + result_pt_2
 
     list_products = []
+
+    list_products_global = []
     
     for column in results:
         product = {}
@@ -79,6 +96,10 @@ def report_products():
         product['month'] = int(column[6])
 
         list_products.append(product)
+        list_products_global = append_in_list_global(list_products_global, product)
+
+    # Concatena o array com as empresas e o global
+    list_products = list_products + list_products_global
 
     years_report = [int(y) for y in years.split(',')]
     latest_year = min(years_report)
