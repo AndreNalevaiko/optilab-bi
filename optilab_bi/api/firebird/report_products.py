@@ -7,7 +7,7 @@ import io, copy
 from optilab_bi import connection, db
 from optilab_bi.model.product import ReportProducts
 from optilab_bi.api.mysql import configuration, product as product_api
-from optilab_bi.api.firebird.sqls.products import sql_all_products_pt_1, sql_all_products_pt_2
+from optilab_bi.api.firebird.sqls.products import sql_all_products_pt_1, sql_all_products_pt_2,  sql_all_products_pt_3
 from optilab_bi.api.firebird.util import resolve_abstract_inconsistency
 from optilab_bi.helpers import to_dict
 
@@ -78,8 +78,15 @@ def report_products():
 
     session.execute(sql_pt_2)
     result_pt_2 = session.fetchall()
+
+    sql_pt_3 = sql_all_products_pt_3()
+    sql_pt_3 = sql_pt_3.format(list_cfop=list_cfop, month=month, years=years)
+    sql_pt_3 = sql_pt_3.replace('\n', ' ')
+
+    session.execute(sql_pt_3)
+    result_pt_3 = session.fetchall()
     
-    results = result_pt_1 + result_pt_2
+    results = result_pt_1 + result_pt_2 + result_pt_3
 
     list_products = []
 
@@ -109,13 +116,38 @@ def report_products():
 
 
     for record in list_current:
-        report_products = ReportProducts.query.filter(
-            ReportProducts.brand == record['brand'],
-            ReportProducts.label == record['label'],
-            ReportProducts.business_code == record['business_code'],
-            ReportProducts.month == record['month'],
-            ReportProducts.current_year == current_year
-        ).one_or_none()
+        select = "SELECT * FROM report_products where brand = '{}' and label = '{}' and business_code = {} and month = {} and year = {}".format(
+            record['brand'],record['label'],record['business_code'],record['month'],current_year
+        )
+        try:
+            report_products = ReportProducts.query.filter(
+                ReportProducts.brand == record['brand'],
+                ReportProducts.label == record['label'],
+                ReportProducts.business_code == record['business_code'],
+                ReportProducts.month == record['month'],
+                ReportProducts.current_year == current_year
+            ).one_or_none()
+
+        except Exception:
+            print("Registro duplicado para ({})".format(select))
+            # Deleta o registro duplicado
+            report_product_duplicated = ReportProducts.query.filter(
+                ReportProducts.brand == record['brand'],
+                ReportProducts.label == record['label'],
+                ReportProducts.business_code == record['business_code'],
+                ReportProducts.month == record['month'],
+                ReportProducts.current_year == current_year
+            ).first()
+
+            db.session.delete(report_product_duplicated)
+
+            report_products = ReportProducts.query.filter(
+                ReportProducts.brand == record['brand'],
+                ReportProducts.label == record['label'],
+                ReportProducts.business_code == record['business_code'],
+                ReportProducts.month == record['month'],
+                ReportProducts.current_year == current_year
+            ).one_or_none()
 
         if not report_products:
             report_products = ReportProducts()

@@ -32,21 +32,40 @@ def billing():
     year = period['year']
 
     sql = """
-        select sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta, 
-        iif( cli.funcodigo = 858, 5, nfs.empcodigo ) empcodigo
-        from notas nfs
-        left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
-                            and nfs.empcodigo = nfp.empcodigo
-        left join produ    pro on pro.procodigo = nfp.procodigo
-        left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
-        left join clien    cli on cli.clicodigo = nfs.clicodigo
-        where  EXTRACT(MONTH FROM nfs.nfdtemis) = {} and EXTRACT(YEAR FROM nfs.nfdtemis) = {}  
-        and nfs.nfsit ='N'   and nfp.nfcodigo is not null
-        and nfs.fiscodigo1 in ({})
-        group by empcodigo
+    SELECT sum(tmp.pedvrtotal) as vr_venda_bruta
+     , tmp.empcodigo as emp_code
+    from 
+        ( 
+    SELECT iif( cl.funcodigo = 858, 5, pd.empcodigo ) empcodigo
+        , SUM(coalesce(pr.pdpvrcontabil,0)) pedvrtotal
+    FROM Pedid pd 
+            LEFT JOIN PdPrd pr   ON (pr.id_pedido = pd.id_pedido) 
+            LEFT JOIN TbFis fis  ON (pr.FisCodigo = fis.FisCodigo)
+            LEFT JOIN Clien cl   ON (pd.CliCodigo = cl.CliCodigo)
+    WHERE EXTRACT(MONTH FROM pd.PedDtBaixa) = {month} and EXTRACT(YEAR FROM pd.PedDtBaixa) = {year}
+    and pd.PedSitPed in ('B', 'F') and PedDtSaida is not null
+    and ( (pr.pdplcfinan = 'S' and pd.pedlcfinanc <> 'L') or  (pr.pdplcfinan = 'N') or  (pd.pedlcfinanc = 'L' and pr.pdplcfinan = 'S'))
+    and ( (pr.pdplcetq = 'S' and pd.pedlcestoq <> 'L') or (pr.pdplcetq = 'N') or (pr.pdplcetq = 'S' and pd.pedlcestoq = 'L')) 
+    and (fis.FisTpNatOp in ('V', 'R', 'REG', 'REB', 'RG', 'RC', 'RB', 'OS', 'SF'))
+    GROUP BY 1
+    UNION 
+    SELECT iif( cl.funcodigo = 858, 5, pd.empcodigo ) empcodigo
+        , SUM(coalesce(ps.pdsvrcontabil,0)) pedvrtotal
+    FROM Pedid pd 
+            LEFT JOIN PdSer ps   ON (ps.id_pedido = pd.id_pedido) 
+            LEFT JOIN TbFis fis  ON (fis.FisCodigo = ps.FisCodigo)
+            LEFT JOIN Clien cl   ON (pd.CliCodigo = cl.CliCodigo)
+    WHERE EXTRACT(MONTH FROM pd.PedDtBaixa) = {month} and EXTRACT(YEAR FROM pd.PedDtBaixa) = {year}
+    and pd.PedSitPed in ('B', 'F') and PedDtSaida is not null
+    and ( (ps.pdslcfinan = 'S' and pd.pedlcfinanc <> 'L') or  (ps.pdslcfinan = 'N') or  (pd.pedlcfinanc = 'L' and ps.pdslcfinan = 'S'))
+    and ( (ps.pdslcetq = 'S' and pd.pedlcestoq <> 'L') or (ps.pdslcetq = 'N') or (ps.pdslcetq = 'S' and pd.pedlcestoq = 'L')) 
+    and (fis.FisTpNatOp in ('V', 'R', 'REG', 'REB', 'RG', 'RC', 'RB', 'OS', 'SF'))
+    GROUP BY 1
+        ) tmp 
+    group by 2
     """
 
-    sql = sql.format(month, year, cfop_configuration)
+    sql = sql.format(month=month, year=year)
 
     sql = sql.replace('\n', ' ')
 
@@ -63,10 +82,11 @@ def billing():
     for column in results:
         rate = {}
 
-        rate['value'] = column[0]
+        rate['value'] = float(str(column[0]))
         rate['business'] = column[1]
 
-        rate_global['value'] = rate_global['value'] + column[0]
+        rate_global['value'] = float(rate_global['value']) + float(column[0])
+        rate_global['value'] = float(str(rate_global['value']))
 
         result_list.append(rate)
     

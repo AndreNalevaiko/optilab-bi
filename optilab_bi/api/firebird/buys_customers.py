@@ -23,20 +23,20 @@ def build_result(brute_list):
             'current_value': None,
         }
         if item['type'] == 'current':
-            item_result['current_value'] = item['value']
+            item_result['current_value'] = float(str(item['value']))
         else:
-            item_result['latest_value'] = item['value']
+            item_result['latest_value'] = float(str(item['value']))
 
         for aux in copy_list:
             if item['type'] == 'current':
                 if aux['cli_codigo'] == item['cli_codigo'] and \
                 aux['business_code'] == item['business_code'] and aux['type'] == 'latest':
-                    item_result['latest_value'] = aux['value']
+                    item_result['latest_value'] = float(str(aux['value']))
                     
             else:
                 if aux['cli_codigo'] == item['cli_codigo'] and \
                 aux['business_code'] == item['business_code'] and aux['type'] == 'current':
-                    item_result['current_value'] = aux['value']
+                    item_result['current_value'] = float(str( aux['value']))
         
         result.append(item_result)
 
@@ -110,20 +110,17 @@ def _eval(date):
     session = connection.cursor()
     sql = eval_months_buys()
 
-    list_cfop = configuration.get_config('cfop_vendas')
-
     current_month = date.get('month')
     current_year = date.get('year')
-    
+
     if int(current_month) == 1:
         latest_month = '12'
-        years = current_year + ', {}'.format(int(current_year) - 1)
+        years = str(current_year) + ', {}'.format(int(current_year) - 1)
     else:
         latest_month = str(int(current_month) - 1)
         years = current_year
 
-    sql = sql.format(list_cfop=list_cfop, current_month=current_month, 
-                                latest_month=latest_month, years=years)
+    sql = sql.format(current_month=current_month, latest_month=latest_month, years=years)
 
     session.execute(sql)
     
@@ -134,14 +131,13 @@ def _eval(date):
 
         rate['cli_codigo'] = row[0]
         rate['cli_nome_fan'] = row[1]
-        rate['value'] = row[2]
-        rate['month'] = row[3]
-        rate['year'] = row[4]
-        rate['business_code'] = row[5]
-        rate['type'] = 'current' if row[4] == int(current_year) and row[3] == int(current_month) else 'latest' 
+        rate['value'] = row[7]
+        rate['month'] = row[9]
+        rate['year'] = row[10]
+        rate['business_code'] = row[11]
+        rate['type'] = 'current' if row[10] == int(current_year) and row[9] == int(current_month) else 'latest' 
 
         result_list.append(rate)
-    
     response = build_result(result_list)
     
     for item in response:
