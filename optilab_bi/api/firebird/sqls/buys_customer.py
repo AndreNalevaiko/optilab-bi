@@ -11,7 +11,7 @@ def eval_months_buys():
      , count(distinct(tmp.id_pedido)) as qtdade
      , tmp.num_month as num_month 
      , tmp.num_year as num_year 
-     , tmp.empcodigo as emp_code
+     , {emp_column} as emp_code
     from 
         ( 
     SELECT cl.clicodigo 
@@ -78,7 +78,7 @@ def eval_months_buys():
 def active_today():
     return """
     /*DIA ATUAL*/
-    select COUNT(distinct ped.CLICODIGO), iif( cli.funcodigo = 858, 5, ped.empcodigo ) emp_code
+    select COUNT(distinct ped.CLICODIGO), {emp_column} emp_code
     from pedid ped
     left join clien cli on cli.CLICODIGO = ped.CLICODIGO
     where  1 = 1
@@ -91,7 +91,7 @@ def active_today():
 def active_today_yesterday():
     return """
     /*DIA ATUAL E DIA ANTERIOR*/
-    select COUNT(distinct ped.CLICODIGO), iif( cli.funcodigo = 858, 5, ped.empcodigo ) emp_code, EXTRACT(DAY FROM ped.PEDDTEMIS) day_buy
+    select COUNT(distinct ped.CLICODIGO), {emp_column} emp_code, EXTRACT(DAY FROM ped.PEDDTEMIS) day_buy
     from pedid ped
     left join clien cli on cli.CLICODIGO = ped.CLICODIGO
     where 
@@ -106,7 +106,7 @@ def active_today_yesterday():
 def active_current_previous_month():
     return """
     /*MES ATUAL E MES ANTERIOR*/
-    select COUNT(distinct ped.CLICODIGO), iif( cli.funcodigo = 858, 5, ped.empcodigo ) emp_code, EXTRACT(MONTH FROM ped.PEDDTEMIS) num_month
+    select COUNT(distinct ped.CLICODIGO), {emp_column} emp_code, EXTRACT(MONTH FROM ped.PEDDTEMIS) num_month
     from pedid ped
     left join clien cli on cli.CLICODIGO = ped.CLICODIGO
     where 
@@ -120,7 +120,7 @@ def active_current_previous_month():
 def active_latest_year():
     return """
     /*MEDIA ANO ANTERIOR - TEM QUE CALCULAR NO BACKEND*/
-    select COUNT(distinct ped.CLICODIGO), iif( cli.funcodigo = 858, 5, ped.empcodigo ) emp_code, EXTRACT(MONTH FROM ped.PEDDTEMIS) num_month
+    select COUNT(distinct ped.CLICODIGO), {emp_column} emp_code, EXTRACT(MONTH FROM ped.PEDDTEMIS) num_month
     from pedid ped
     left join clien cli on cli.CLICODIGO = ped.CLICODIGO
     where 

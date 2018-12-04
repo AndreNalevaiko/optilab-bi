@@ -120,12 +120,19 @@ def _eval(date):
         latest_month = str(int(current_month) - 1)
         years = current_year
 
-    sql = sql.format(current_month=current_month, latest_month=latest_month, years=years)
+    # Ajuste para consolidação do global 
+    sql_emps = sql.format(current_month=current_month, latest_month=latest_month, years=years, emp_column='tmp.empcodigo')
+    sql_global = sql.format(current_month=current_month, latest_month=latest_month, years=years, emp_column='0')
 
-    session.execute(sql)
-    
+    session.execute(sql_emps)
     results = session.fetchall()
+    
+
+    session.execute(sql_global)
+    results = results + session.fetchall()
+
     result_list = []
+
     for row in results:
         rate = {}
 
@@ -195,22 +202,35 @@ def _amount(date):
     # TODO melhorar logica para pega o latest day como latest util day
     latest_day = str(int(current_day) - 1)
 
-    sql_month = sql_month.format(list_cfop=list_cfop, current_year=current_year,\
-                            current_month=current_month, latest_month=latest_month)
+    sql_month_emps = sql_month.format(list_cfop=list_cfop, current_year=current_year,\
+                            current_month=current_month, latest_month=latest_month,\
+                            emp_column='iif( cli.funcodigo = 858, 5, ped.empcodigo )')
+    sql_day_emps = sql_day.format(list_cfop=list_cfop, current_day=current_day, latest_day=latest_day, \
+                            current_month=current_month, current_year=current_year,\
+                            emp_column='iif( cli.funcodigo = 858, 5, ped.empcodigo )')
+    sql_latest_year_emps = sql_latest_year.format(list_cfop=list_cfop, latest_year=latest_year,\
+                            emp_column='iif( cli.funcodigo = 858, 5, ped.empcodigo )')
 
-    sql_day = sql_day.format(list_cfop=list_cfop, current_day=current_day, latest_day=latest_day, \
-                            current_month=current_month, current_year=current_year)
+    sql_month_global = sql_month.format(list_cfop=list_cfop, current_year=current_year,\
+                            current_month=current_month, latest_month=latest_month, emp_column=0)
+    sql_day_global = sql_day.format(list_cfop=list_cfop, current_day=current_day, latest_day=latest_day, \
+                            current_month=current_month, current_year=current_year, emp_column=0)
+    sql_latest_year_global = sql_latest_year.format(list_cfop=list_cfop, latest_year=latest_year, emp_column=0)
 
-    sql_latest_year = sql_latest_year.format(list_cfop=list_cfop, latest_year=latest_year)
-
-    session.execute(sql_month)
+    session.execute(sql_month_emps)
     result_month = session.fetchall()
+    session.execute(sql_month_global)
+    result_month = result_month + session.fetchall()
 
-    session.execute(sql_day)
+    session.execute(sql_day_emps)
     result_day = session.fetchall()
+    session.execute(sql_day_global)
+    result_day = result_day + session.fetchall()
 
-    session.execute(sql_latest_year)
+    session.execute(sql_latest_year_emps)
     result_latest_year = session.fetchall()
+    session.execute(sql_latest_year_global)
+    result_latest_year = result_latest_year + session.fetchall()
 
     filters = {
         'current_year': current_year,
@@ -263,11 +283,17 @@ def generate_current_day_amount(date):
     current_month = date.get('month')
     current_day = date.get('day')
 
-    sql_day = sql_day.format(list_cfop=list_cfop, current_day=current_day, \
-                            current_month=current_month, current_year=current_year)
+    sql_day_emps = sql_day.format(list_cfop=list_cfop, current_day=current_day, \
+                            current_month=current_month, current_year=current_year,\
+                            emp_column='iif( cli.funcodigo = 858, 5, ped.empcodigo )')
+    sql_day_global = sql_day.format(list_cfop=list_cfop, current_day=current_day, \
+                            current_month=current_month, current_year=current_year,\
+                            emp_column='0')
 
-    session.execute(sql_day)
+    session.execute(sql_day_emps)
     result_day = session.fetchall()
+    session.execute(sql_day_global)
+    result_day = result_day + session.fetchall()
 
     result = []
 
