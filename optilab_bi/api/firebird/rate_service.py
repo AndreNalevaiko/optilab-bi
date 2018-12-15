@@ -1,7 +1,7 @@
 from datetime import date, timedelta, datetime
 import numpy as np
 
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from optilab_bi import connection
 from optilab_bi.api.firebird.sqls.rate_service import group_by_types
 
@@ -9,9 +9,14 @@ actions = Blueprint('rate_service', __name__, url_prefix='/rate_service')
 
 @actions.route('/_generate', methods=['GET'])
 def rate_service():
+    import ipdb; ipdb.set_trace()
     session = connection.cursor()
     sql = group_by_types()
     sql = sql.format(data_ini='01/01/2018', data_final='01/30/2018')
+
+    # TODO utilizar data dos parametros
+    # data_ini = request.args.get('data_ini')
+    # data_final = request.args.get('data_final')
 
     session.execute(sql)
     
@@ -40,7 +45,8 @@ def rate_service():
         else:
             rate['hours'] = dif_date.seconds / 60 / 60
 
-        rate['days'] = dif_date.days
+        # rate['days'] = dif_date.days
+        rate['days'] = (row[9] - row[7]).days
 
         date_ini_ord = row[7].toordinal()
         date_end_ord = row[9].toordinal()
@@ -51,7 +57,7 @@ def rate_service():
             if (d.weekday() == 6) or (d.weekday() == 5):
                 weekend_days = weekend_days + 1
 
-        rate['working_days'] = dif_date.days - weekend_days
+        rate['working_days'] = rate['days'] - weekend_days
         rate['working_hours'] = (rate['working_days'] * 24) + dif_date.seconds / 60 / 60
 
 
