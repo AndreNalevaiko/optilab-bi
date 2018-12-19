@@ -9,14 +9,15 @@ actions = Blueprint('rate_service', __name__, url_prefix='/rate_service')
 
 @actions.route('/_generate', methods=['GET'])
 def rate_service():
-    import ipdb; ipdb.set_trace()
     session = connection.cursor()
     sql = group_by_types()
-    sql = sql.format(data_ini='01/01/2018', data_final='01/30/2018')
 
-    # TODO utilizar data dos parametros
-    # data_ini = request.args.get('data_ini')
-    # data_final = request.args.get('data_final')
+    data_ini = request.args.get('data_ini')
+    data_final = request.args.get('data_final')
+    sql = sql.format(
+        data_ini=datetime.strptime(data_ini, '%d/%m/%Y').strftime('%m/%d/%Y'),
+        data_final=datetime.strptime(data_final, '%d/%m/%Y').strftime('%m/%d/%Y')
+    )
 
     session.execute(sql)
     
