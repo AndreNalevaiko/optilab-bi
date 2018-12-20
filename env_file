@@ -1,3 +1,4 @@
+SECRET_KEY=op123lab456
 SENDGRID_API_KEY=TESTE
 DATABASE_MYSQL=mysql+pymysql://optilab-bi:optilab-bi@localhost/optilab-bi?charset=utf8mb4
 DATABASE_FIREBIRD=firebird+fdb://sysdba:ffracert@localhost:3050/[sgo=sgo.fdb]

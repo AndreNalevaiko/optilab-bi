@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin
 
-from optilab_bi import connection
+from optilab_bi import  get_connection
 from optilab_bi.api.mysql import configuration
 
 
@@ -11,6 +11,7 @@ actions = Blueprint('billing', __name__, url_prefix='/billing')
 @actions.route('/', methods=['POST'])
 @cross_origin()
 def billing():
+    connection = get_connection()
     session = connection.cursor()
     # Exemplo POST
     # {
@@ -91,5 +92,7 @@ def billing():
         result_list.append(rate)
     
     result_list.append(rate_global)
+
+    connection.close()
 
     return jsonify(result_list)

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import calendar
 from flask import Blueprint, jsonify, request
-from optilab_bi import connection, db
+from optilab_bi import  get_connection, db
 from optilab_bi.api.firebird.sqls.kpi import qtd_pedid, qtd_pecas_pedid, vlr_pedid
 from optilab_bi.api.mysql import configuration
 from optilab_bi.model import Kpi
@@ -81,6 +81,7 @@ def _generate():
             'day': date_now.day,
         }
 
+    connection = get_connection()
     session = connection.cursor()
 
     date_now = datetime.now().replace(day=int(date['day']), month=int(date['month']), year=int(date['year']))
@@ -204,5 +205,7 @@ def _generate():
             db.session.add(kpi)
 
     db.session.commit()
+
+    connection.close()
 
     return 'OK', 200

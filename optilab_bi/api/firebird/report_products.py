@@ -4,7 +4,7 @@ from flask_cors import cross_origin
 import pandas
 import io, copy
 
-from optilab_bi import connection, db
+from optilab_bi import  get_connection, db
 from optilab_bi.model.product import ReportProducts
 from optilab_bi.api.mysql import configuration, product as product_api
 from optilab_bi.api.firebird.sqls.products import sql_all_products_pt_1, sql_all_products_pt_2,  sql_all_products_pt_3
@@ -45,6 +45,7 @@ def return_latest(list_products, brand, label, business_code, year):
 @actions.route('/_generate', methods=['POST'])
 @cross_origin()
 def report_products():
+    connection = get_connection()
     session = connection.cursor()
 
     query = ''
@@ -177,6 +178,8 @@ def report_products():
     ).all()
 
     results = [to_dict(report) for report in results]
+
+    connection.close()
 
     return jsonify(results)
 

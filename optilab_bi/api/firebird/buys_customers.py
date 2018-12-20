@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from flask import Blueprint, jsonify, request
-from optilab_bi import connection, db
+from optilab_bi import  get_connection, db
 from optilab_bi.api.firebird.sqls.buys_customer import eval_months_buys, \
 active_current_previous_month, active_latest_year, active_today_yesterday, \
 active_today
@@ -107,7 +107,9 @@ def calc_amonts(result_day, result_month, result_lates_year, filters):
         
 
 def _eval(date):
+    connection = get_connection()
     session = connection.cursor()
+
     sql = eval_months_buys()
 
     current_month = date.get('month')
@@ -182,10 +184,13 @@ def _eval(date):
     
     db.session.commit()
 
+    connection.close()
+
     return jsonify(response)
 
 
 def _amount(date):
+    connection = get_connection()
     session = connection.cursor()
 
     sql_month = active_current_previous_month()
@@ -271,8 +276,11 @@ def _amount(date):
 
     db.session.commit()
 
+    connection.close()
+
 
 def generate_current_day_amount(date):
+    connection = get_connection()
     session = connection.cursor()
 
     sql_day = active_today()
@@ -322,7 +330,9 @@ def generate_current_day_amount(date):
 
             db.session.add(number_active_customers)
 
-    db.session.commit()    
+    db.session.commit()   
+
+    connection.close() 
     
 @actions.route('/_generate', methods=['POST'])
 def _generate():

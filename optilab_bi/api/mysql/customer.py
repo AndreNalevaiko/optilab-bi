@@ -4,6 +4,8 @@ from optilab_bi.model import CustomerBillingReport, NumberActiveCustomers
 from optilab_bi.api.firebird.buys_customers import generate_current_day_amount
 from optilab_bi.config import API_VERSION
 
+from .util import check_authentication
+
 logger = logging.getLogger(__name__)
 
 def before_get_number_active(search_params=None, **kw):
@@ -24,6 +26,12 @@ def create_api(api):
                    results_per_page=0,
                    primary_key='id',
                    preprocessors={
+                       'GET_SINGLE': [
+                           check_authentication(['user'])
+                       ],
+                       'GET_MANY': [
+                           check_authentication(['user'])
+                       ]
                    },
                    postprocessors={
                    })
@@ -34,7 +42,13 @@ def create_api(api):
                    results_per_page=0,
                    primary_key='id',
                    preprocessors={
-                       'GET_MANY': [before_get_number_active]
+                       'GET_SINGLE': [
+                           check_authentication(['user'])
+                       ],
+                       'GET_MANY': [
+                           check_authentication(['user']),
+                           before_get_number_active
+                       ]
                    },
                    postprocessors={
                    })

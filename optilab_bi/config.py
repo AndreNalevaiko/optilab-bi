@@ -4,6 +4,8 @@ APP_NAME = 'optilab-bi-api'
 APP_VERSION = '1.0.0'
 API_VERSION = 'v1'
 
+SECRET_KEY = os.environ['SECRET_KEY']
+
 DATABASE_URL = os.environ['DATABASE_MYSQL']
 DATABASE_FIREBIRD = os.environ['DATABASE_FIREBIRD']
 

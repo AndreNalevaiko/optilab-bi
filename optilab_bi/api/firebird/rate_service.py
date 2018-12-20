@@ -2,14 +2,16 @@ from datetime import date, timedelta, datetime
 import numpy as np
 
 from flask import Blueprint, jsonify, request
-from optilab_bi import connection
+from optilab_bi import get_connection
 from optilab_bi.api.firebird.sqls.rate_service import group_by_types
 
 actions = Blueprint('rate_service', __name__, url_prefix='/rate_service')
 
 @actions.route('/_generate', methods=['GET'])
 def rate_service():
+    connection = get_connection()
     session = connection.cursor()
+
     sql = group_by_types()
 
     data_ini = request.args.get('data_ini')
@@ -63,5 +65,7 @@ def rate_service():
 
 
         result_list.append(rate)
+
+    connection.close()
 
     return jsonify(result_list)

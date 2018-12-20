@@ -2,16 +2,17 @@ from datetime import datetime
 from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin
 
-from optilab_bi import connection
+from optilab_bi import get_connection
 from optilab_bi.api.mysql import configuration, product as product_api
 
 actions = Blueprint('abstract_products', __name__,
                     url_prefix='/abstract_products')
 
-
+sadas
 @actions.route('/', methods=['POST'])
 @cross_origin()
 def abstract_products():
+    connection = get_connection()
     session = connection.cursor()
 
     query = ''
@@ -125,12 +126,15 @@ def abstract_products():
             else:
                 response[business] = [product]
 
+    connection.close()
+
     return jsonify(response)
 
 
 @actions.route('/brands', methods=['POST'])
 @cross_origin()
 def abstract_brands():
+    connection = get_connection()
     session = connection.cursor()
 
     query = ''
@@ -253,6 +257,6 @@ def abstract_brands():
                 
                 response[company][label][year] = [p for p in list_products if p['year'] == year and p['business_code'] == company and p['label'] == label]
                 
-       
+    connection.close()       
 
     return jsonify(response)
