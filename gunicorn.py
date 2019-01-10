@@ -6,6 +6,6 @@ workers = multiprocessing.cpu_count() + 1
 
 worker_class = 'eventlet'
 
-timeout = 120
+timeout = 180
 
 loglevel = 'info'

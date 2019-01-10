@@ -73,22 +73,22 @@ def report_products():
     session.execute(sql_pt_1)
     result_pt_1 = session.fetchall()
 
-    sql_pt_2 = sql_all_products_pt_2()
-    sql_pt_2 = sql_pt_2.format(list_cfop=list_cfop, month=month, years=years)
-    sql_pt_2 = sql_pt_2.replace('\n', ' ')
+    # sql_pt_2 = sql_all_products_pt_2()
+    # sql_pt_2 = sql_pt_2.format(list_cfop=list_cfop, month=month, years=years)
+    # sql_pt_2 = sql_pt_2.replace('\n', ' ')
 
-    session.execute(sql_pt_2)
-    result_pt_2 = session.fetchall()
+    # session.execute(sql_pt_2)
+    # result_pt_2 = session.fetchall()
 
-    sql_pt_3 = sql_all_products_pt_3()
-    sql_pt_3 = sql_pt_3.format(list_cfop=list_cfop, month=month, years=years)
-    sql_pt_3 = sql_pt_3.replace('\n', ' ')
+    # sql_pt_3 = sql_all_products_pt_3()
+    # sql_pt_3 = sql_pt_3.format(list_cfop=list_cfop, month=month, years=years)
+    # sql_pt_3 = sql_pt_3.replace('\n', ' ')
 
-    session.execute(sql_pt_3)
-    result_pt_3 = session.fetchall()
+    # session.execute(sql_pt_3)
+    # result_pt_3 = session.fetchall()
     
-    results = result_pt_1 + result_pt_2 + result_pt_3
-
+    # results = result_pt_1 + result_pt_2 + result_pt_3
+    results = result_pt_1
     list_products = []
 
     list_products_global = []
