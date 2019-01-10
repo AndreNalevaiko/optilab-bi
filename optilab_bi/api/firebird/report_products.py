@@ -7,7 +7,7 @@ import io, copy
 from optilab_bi import  get_connection, db
 from optilab_bi.model.product import ReportProducts
 from optilab_bi.api.mysql import configuration, product as product_api
-from optilab_bi.api.firebird.sqls.products import sql_all_products_pt_1, sql_all_products_pt_2,  sql_all_products_pt_3
+from optilab_bi.api.firebird.sqls.products import sql_products_simple
 from optilab_bi.api.firebird.util import resolve_abstract_inconsistency
 from optilab_bi.helpers import to_dict
 
@@ -66,12 +66,19 @@ def report_products():
 
     list_cfop = configuration.get_config('cfop_vendas')
 
-    sql_pt_1 = sql_all_products_pt_1()
+    sql_pt_1 = sql_products_simple()
     sql_pt_1 = sql_pt_1.format(list_cfop=list_cfop, month=month, years=years)
     sql_pt_1 = sql_pt_1.replace('\n', ' ')
 
     session.execute(sql_pt_1)
     result_pt_1 = session.fetchall()
+
+    # sql_pt_1 = sql_all_products_pt_1()
+    # sql_pt_1 = sql_pt_1.format(list_cfop=list_cfop, month=month, years=years)
+    # sql_pt_1 = sql_pt_1.replace('\n', ' ')
+
+    # session.execute(sql_pt_1)
+    # result_pt_1 = session.fetchall()
 
     # sql_pt_2 = sql_all_products_pt_2()
     # sql_pt_2 = sql_pt_2.format(list_cfop=list_cfop, month=month, years=years)

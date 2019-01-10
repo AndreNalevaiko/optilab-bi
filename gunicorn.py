@@ -8,4 +8,4 @@ worker_class = 'eventlet'
 
 timeout = 180
 
-loglevel = 'info'
+loglevel = 'debug'
