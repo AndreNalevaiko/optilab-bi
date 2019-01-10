@@ -209,12 +209,12 @@ def _amount(date):
 
     sql_month_emps = sql_month.format(list_cfop=list_cfop, current_year=current_year,\
                             current_month=current_month, latest_month=latest_month,\
-                            emp_column='iif( cli.funcodigo = 858, 5, ped.empcodigo )')
+                            emp_column='iif( cli.funcodigo = 321, 5, ped.empcodigo )')
     sql_day_emps = sql_day.format(list_cfop=list_cfop, current_day=current_day, latest_day=latest_day, \
                             current_month=current_month, current_year=current_year,\
-                            emp_column='iif( cli.funcodigo = 858, 5, ped.empcodigo )')
+                            emp_column='iif( cli.funcodigo = 321, 5, ped.empcodigo )')
     sql_latest_year_emps = sql_latest_year.format(list_cfop=list_cfop, latest_year=latest_year,\
-                            emp_column='iif( cli.funcodigo = 858, 5, ped.empcodigo )')
+                            emp_column='iif( cli.funcodigo = 321, 5, ped.empcodigo )')
 
     sql_month_global = sql_month.format(list_cfop=list_cfop, current_year=current_year,\
                             current_month=current_month, latest_month=latest_month, emp_column=0)
@@ -293,7 +293,7 @@ def generate_current_day_amount(date):
 
     sql_day_emps = sql_day.format(list_cfop=list_cfop, current_day=current_day, \
                             current_month=current_month, current_year=current_year,\
-                            emp_column='iif( cli.funcodigo = 858, 5, ped.empcodigo )')
+                            emp_column='iif( cli.funcodigo = 321, 5, ped.empcodigo )')
     sql_day_global = sql_day.format(list_cfop=list_cfop, current_day=current_day, \
                             current_month=current_month, current_year=current_year,\
                             emp_column='0')

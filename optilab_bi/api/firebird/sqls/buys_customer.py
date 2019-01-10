@@ -22,7 +22,7 @@ def eval_months_buys():
         , SUM(Coalesce(pr.pdpvrdesctogeral,0)) produto_desconto 
         , 0 servico_desconto 
         , pd.id_pedido
-        , iif( cl.funcodigo = 858, 5, pd.empcodigo ) empcodigo
+        , iif( cl.funcodigo = 321, 5, pd.empcodigo ) empcodigo
         , SUM(coalesce(pr.pdpvrcontabil,0)) pedvrtotal
         , count(pr.id_pedido) as qtdade 
         , EXTRACT(MONTH FROM pd.PedDtBaixa) num_month
@@ -50,7 +50,7 @@ def eval_months_buys():
         , 0 produto_desconto 
         , SUM(Coalesce(ps.pdsvrdesctogeral,0)) servico_desconto 
         , pd.id_pedido
-        , iif( cl.funcodigo = 858, 5, pd.empcodigo ) empcodigo
+        , iif( cl.funcodigo = 321, 5, pd.empcodigo ) empcodigo
         , SUM(coalesce(ps.pdsvrcontabil,0)) pedvrtotal
         , count(ps.id_pedido) as qtdade
         , EXTRACT(MONTH FROM pd.PedDtBaixa) num_month

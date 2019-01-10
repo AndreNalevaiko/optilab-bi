@@ -1,7 +1,7 @@
 def sql_all_products_pt_1():
     return """
     select 'Transitions', 'Geral_Transitions',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -15,7 +15,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Transitions', 'Geral_Outros_Fotossensiveis',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -30,7 +30,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Transitions', 'Trans_Varilux', sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -45,7 +45,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Transitions', 'Trans_Kodak',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -60,7 +60,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Transitions', 'Trans_Itop',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -75,7 +75,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Transitions', 'Trans_Vs_acabada',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -89,7 +89,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Transitions', 'Trans_bloco_VS_BF',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -103,7 +103,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Transitions', 'Trans_advans_eyezen',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -118,7 +118,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Transitions', 'Trans_mult_conv',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -132,7 +132,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Transitions', 'Trans_mult_dig',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -146,7 +146,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Varilux', 'Geral_Varilux', sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -160,7 +160,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Varilux', 'Varilux_Digitime',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -174,7 +174,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Varilux', 'Varilux_Liberty',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs  
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -188,7 +188,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Varilux', 'Varilux_Comfort',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -202,7 +202,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Varilux', 'Varilux_Physio',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -216,7 +216,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Varilux', 'Varilux_E',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -230,7 +230,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Varilux', 'Varilux_X',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -244,7 +244,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Varilux', 'Varilux_S',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -258,7 +258,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Varilux', 'Varilux_Trad',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -272,7 +272,7 @@ def sql_all_products_pt_1():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Varilux', 'Varilux_Digital',  sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -289,7 +289,7 @@ def sql_all_products_pt_1():
 def sql_all_products_pt_2():
     return """
     select 'Kodak', 'Geral_Kodak',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -303,7 +303,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Kodak', 'Kodak_Mult_Conv',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -317,7 +317,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Kodak', 'Kodak_Mult_Dig',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -331,7 +331,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Kodak', 'Kodak_Vs_Conv',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -345,7 +345,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Kodak', 'Kodak_Vs_Digital',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -359,7 +359,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Kodak', 'Kodak_Ocupacional',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -373,7 +373,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Itop', 'Geral_Itop',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -387,7 +387,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Itop', 'Itop_Mult',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -401,7 +401,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Itop', 'Itop_Vs_Dig',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -415,7 +415,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Itop', 'Itop_Vs_Conv',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -429,7 +429,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Crizal', 'Geral_Crizal',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -444,7 +444,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Crizal', 'Crizal_Vs_Conv',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -459,7 +459,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Crizal', 'Crizal_Vs_Dig',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -474,7 +474,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Crizal', 'Crizal_Mult_Conv',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -489,7 +489,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Crizal', 'Crizal_Mult_Dig',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -504,7 +504,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Crizal', 'TRATAMENTOS', sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -516,7 +516,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Crizal', 'Crizal_Varilux',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -531,7 +531,7 @@ def sql_all_products_pt_2():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Crizal', 'Crizal_Kodak',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -549,7 +549,7 @@ def sql_all_products_pt_2():
 def sql_all_products_pt_3():
     return """
     select 'TOTAL', 'VS_Conv',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -562,7 +562,7 @@ def sql_all_products_pt_3():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'TOTAL', 'VS_DIG',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -575,7 +575,7 @@ def sql_all_products_pt_3():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'TOTAL', 'Mult_Conv',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -588,7 +588,7 @@ def sql_all_products_pt_3():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'TOTAL', 'Mult_Dig',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo
@@ -601,7 +601,7 @@ def sql_all_products_pt_3():
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'TOTAL', 'Bifocal',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
-    iif( cli.funcodigo = 858, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
                         and nfs.empcodigo = nfp.empcodigo

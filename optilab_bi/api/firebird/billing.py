@@ -37,7 +37,7 @@ def billing():
      , tmp.empcodigo as emp_code
     from 
         ( 
-    SELECT iif( cl.funcodigo = 858, 5, pd.empcodigo ) empcodigo
+    SELECT iif( cl.funcodigo = 321, 5, pd.empcodigo ) empcodigo
         , SUM(coalesce(pr.pdpvrcontabil,0)) pedvrtotal
     FROM Pedid pd 
             LEFT JOIN PdPrd pr   ON (pr.id_pedido = pd.id_pedido) 
@@ -50,7 +50,7 @@ def billing():
     and (fis.FisTpNatOp in ('V', 'R', 'REG', 'REB', 'RG', 'RC', 'RB', 'OS', 'SF'))
     GROUP BY 1
     UNION 
-    SELECT iif( cl.funcodigo = 858, 5, pd.empcodigo ) empcodigo
+    SELECT iif( cl.funcodigo = 321, 5, pd.empcodigo ) empcodigo
         , SUM(coalesce(ps.pdsvrcontabil,0)) pedvrtotal
     FROM Pedid pd 
             LEFT JOIN PdSer ps   ON (ps.id_pedido = pd.id_pedido) 

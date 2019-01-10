@@ -1,7 +1,7 @@
 
 def qtd_pedid():
     return """
-    SELECT COUNT(ped.ID_PEDIDO), iif(cli.FUNCODIGO = 858, 5, ped.EMPCODIGO) empcodigo
+    SELECT COUNT(ped.ID_PEDIDO), iif(cli.FUNCODIGO = 321, 5, ped.EMPCODIGO) empcodigo
     FROM PEDID ped
     LEFT JOIN clien cli on cli.CLICODIGO = ped.CLICODIGO
     WHERE 1 = 1
@@ -13,7 +13,7 @@ def qtd_pedid():
 
 def vlr_pedid():
     return """
-    SELECT SUM(ped.PEDVRTOTAL), iif(cli.FUNCODIGO = 858, 5, ped.EMPCODIGO) empcodigo
+    SELECT SUM(ped.PEDVRTOTAL), iif(cli.FUNCODIGO = 321, 5, ped.EMPCODIGO) empcodigo
     FROM PEDID ped
     LEFT JOIN clien cli on cli.CLICODIGO = ped.CLICODIGO
     WHERE 1 = 1
@@ -25,7 +25,7 @@ def vlr_pedid():
 
 def qtd_pecas_pedid():
     return """
-    SELECT SUM(pdp.PDPQTDADE), iif(cli.FUNCODIGO = 858, 5, ped.EMPCODIGO) empcodigo
+    SELECT SUM(pdp.PDPQTDADE), iif(cli.FUNCODIGO = 321, 5, ped.EMPCODIGO) empcodigo
     FROM PEDID ped
     LEFT JOIN clien cli on cli.CLICODIGO = ped.CLICODIGO
     LEFT JOIN PDPRD pdp on pdp.ID_PEDIDO = ped.ID_PEDIDO
