@@ -11,7 +11,7 @@ def sql_products_simple():
     where   EXTRACT(MONTH FROM nfs.nfdtemis) = {month} and EXTRACT(YEAR FROM nfs.nfdtemis) in ({years})
     and nfs.nfsit ='N'   and nfp.nfcodigo is not null AND tpl.tpldescricao is not null
     and nfs.fiscodigo1 in ({list_cfop})
-    AND (TPL.tpldescricao LIKE '%TRANS%' ) and pro.gr4codigo <>  1
+    AND (TPL.tpldescricao LIKE '%TRANS%' )
     group by   ANO,  MES,  business_code
     UNION ALL
     select 'Varilux', 'Geral_Varilux', sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
