@@ -6,6 +6,7 @@ active_current_previous_month, active_latest_year, active_today_yesterday, \
 active_today
 from optilab_bi.api.mysql import configuration
 from optilab_bi.model import NumberActiveCustomers, CustomerBillingReport
+from optilab_bi.api.firebird.util import get_same_period_date
 
 actions = Blueprint('/customers', __name__, url_prefix='/customers')
 
@@ -13,7 +14,6 @@ def build_result(brute_list):
     copy_list = [item for item in brute_list]
 
     result = []
-
     for item in brute_list:
         item_result = {
             'cli_codigo': item['cli_codigo'],
@@ -21,7 +21,9 @@ def build_result(brute_list):
             'business_code': item['business_code'],
             'latest_value': None,
             'current_value': None,
+            'date': item['date'],
         }
+
         if item['type'] == 'current':
             item_result['current_value'] = float(str(item['value']))
         else:
@@ -30,13 +32,13 @@ def build_result(brute_list):
         for aux in copy_list:
             if item['type'] == 'current':
                 if aux['cli_codigo'] == item['cli_codigo'] and \
-                aux['business_code'] == item['business_code'] and aux['type'] == 'latest':
+                aux['business_code'] == item['business_code'] and aux['type'] == 'latest_':
                     item_result['latest_value'] = float(str(aux['value']))
                     
             else:
                 if aux['cli_codigo'] == item['cli_codigo'] and \
                 aux['business_code'] == item['business_code'] and aux['type'] == 'current':
-                    item_result['current_value'] = float(str( aux['value']))
+                    item_result['current_value'] = float(str(aux['value']))
         
         result.append(item_result)
 
@@ -112,24 +114,35 @@ def _eval(date):
 
     sql = eval_months_buys()
 
-    current_month = date.get('month')
-    current_year = date.get('year')
+    current_month = date.month
+    current_year = date.year
+    
+    date_filter = get_same_period_date(date)
 
-    if int(current_month) == 1:
-        latest_month = '12'
-        years = str(current_year) + ', {}'.format(int(current_year) - 1)
-    else:
-        latest_month = str(int(current_month) - 1)
-        years = current_year
+    # if int(current_month) == 1:
+    #     latest_month = '12'
+    #     years = str(current_year) + ', {}'.format(int(current_year) - 1)
+    # else:
+    #     latest_month = str(int(current_month) - 1)
+    #     years = current_year
 
     # Ajuste para consolidação do global 
-    sql_emps = sql.format(current_month=current_month, latest_month=latest_month, years=years, emp_column='tmp.empcodigo')
-    sql_global = sql.format(current_month=current_month, latest_month=latest_month, years=years, emp_column='0')
+    sql_emps = sql.format(
+        date_ini_current=date_filter['current']['date_ini'],
+        date_fim_current=date_filter['current']['date_fim'],
+        date_ini_latest=date_filter['latest']['date_ini'],
+        date_fim_latest=date_filter['latest']['date_fim'],
+        emp_column='tmp.empcodigo')
+    sql_global = sql.format(
+        date_ini_current=date_filter['current']['date_ini'],
+        date_fim_current=date_filter['current']['date_fim'],
+        date_ini_latest=date_filter['latest']['date_ini'],
+        date_fim_latest=date_filter['latest']['date_fim'],
+        emp_column='0')
 
     session.execute(sql_emps)
     results = session.fetchall()
     
-
     session.execute(sql_global)
     results = results + session.fetchall()
 
@@ -144,9 +157,11 @@ def _eval(date):
         rate['month'] = row[9]
         rate['year'] = row[10]
         rate['business_code'] = row[11]
-        rate['type'] = 'current' if row[10] == int(current_year) and row[9] == int(current_month) else 'latest' 
+        rate['type'] = row[12]
+        rate['date'] = date.date()
 
         result_list.append(rate)
+
     response = build_result(result_list)
     
     for item in response:
@@ -163,6 +178,7 @@ def _eval(date):
             CustomerBillingReport.business_code == item['business_code'],
             CustomerBillingReport.customer_code == item['cli_codigo'],
             CustomerBillingReport.customer_name == item['cli_nome_fan'],
+            CustomerBillingReport.date == item['date'],
             CustomerBillingReport.month == int(current_month),
             CustomerBillingReport.year == int(current_year)
         ).one_or_none()
@@ -173,6 +189,7 @@ def _eval(date):
             customer_billing_report.business_code = item['business_code']
             customer_billing_report.customer_code = item['cli_codigo']
             customer_billing_report.customer_name = item['cli_nome_fan']
+            customer_billing_report.date = item['date']
             customer_billing_report.month = int(current_month)
             customer_billing_report.year = int(current_year)
 
@@ -336,17 +353,19 @@ def generate_current_day_amount(date):
     
 @actions.route('/_generate', methods=['POST'])
 def _generate():
-    date = request.get_json()
+    data = request.get_json()
+    date = datetime.strptime(data.get('date'), "%Y-%m-%dT%H:%M:%S.%fZ")
 
     if not date:
-        date_now = datetime.now() - timedelta(days=1)
-        date = {
-            'year': date_now.year,
-            'month': date_now.month,
-            'day': date_now.day,
-        }
+        date = datetime.now() - timedelta(days=1)
 
-    _amount(date)
+    date_amount = {
+        'year': date.year,
+        'month': date.month,
+        'day': date.day,
+    }
+
+    _amount(date_amount)
     _eval(date)
 
     return 'OK', 200

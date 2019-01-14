@@ -28,7 +28,7 @@ def downgrade():
 
 
 def schema_upgrades():
-    # op.drop_table('user')
+    op.drop_table('user')
 
     op.create_table('file',
                     sa.Column('id', sa.Integer(), nullable=False),

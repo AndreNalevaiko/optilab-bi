@@ -12,6 +12,7 @@ def eval_months_buys():
      , tmp.num_month as num_month 
      , tmp.num_year as num_year 
      , {emp_column} as emp_code
+     , time_date
     from 
         ( 
     SELECT cl.clicodigo 
@@ -27,6 +28,7 @@ def eval_months_buys():
         , count(pr.id_pedido) as qtdade 
         , EXTRACT(MONTH FROM pd.PedDtBaixa) num_month
         , EXTRACT(YEAR FROM pd.PedDtBaixa) num_year
+        , iif(pd.PedDtBaixa > '{date_fim_latest}', 'current', 'latest_') time_date
     FROM Pedid pd 
             LEFT JOIN PdPrd pr   ON (pr.id_pedido = pd.id_pedido) 
             LEFT JOIN TbFis fis  ON (pr.FisCodigo = fis.FisCodigo)
@@ -35,12 +37,12 @@ def eval_months_buys():
             LEFT JOIN Cidade cid ON (ed.CidCodigo = cid.CidCodigo)
             LEFT JOIN UF u       ON (u.ufcodigo = cid.CidUf)
             LEFT JOIN GrupoCli grp ON grp.gclcodigo = cl.gclcodigo 
-    WHERE EXTRACT(MONTH FROM pd.PedDtBaixa) IN ({latest_month},{current_month}) and EXTRACT(YEAR FROM pd.PedDtBaixa) in ({years})
+    WHERE (pd.PedDtBaixa BETWEEN '{date_ini_current}' and '{date_fim_current}' or pd.PedDtBaixa BETWEEN '{date_ini_latest}' and '{date_fim_latest}')
     and pd.PedSitPed in ('B', 'F') and PedDtSaida is not null
     and ( (pr.pdplcfinan = 'S' and pd.pedlcfinanc <> 'L') or  (pr.pdplcfinan = 'N') or  (pd.pedlcfinanc = 'L' and pr.pdplcfinan = 'S'))
     and ( (pr.pdplcetq = 'S' and pd.pedlcestoq <> 'L') or (pr.pdplcetq = 'N') or (pr.pdplcetq = 'S' and pd.pedlcestoq = 'L')) 
     and (fis.FisTpNatOp in ('V', 'R', 'REG', 'REB', 'RG', 'RC', 'RB', 'OS', 'SF'))
-    GROUP BY 1,2,3,8,9,12,13
+    GROUP BY 1,2,3,8,9,12,13,14
     UNION 
     SELECT cl.clicodigo 
         , CliNomeFant clinome 
@@ -55,6 +57,7 @@ def eval_months_buys():
         , count(ps.id_pedido) as qtdade
         , EXTRACT(MONTH FROM pd.PedDtBaixa) num_month
         , EXTRACT(YEAR FROM pd.PedDtBaixa) num_year
+        , iif(pd.PedDtBaixa > '{date_fim_latest}', 'current', 'latest_') time_date
     FROM Pedid pd 
             LEFT JOIN PdSer ps   ON (ps.id_pedido = pd.id_pedido) 
             LEFT JOIN TbFis fis  ON (fis.FisCodigo = ps.FisCodigo) 
@@ -63,15 +66,15 @@ def eval_months_buys():
             LEFT JOIN Cidade cid ON (ed.CidCodigo = cid.CidCodigo)
             LEFT JOIN UF u       ON (u.ufcodigo = cid.CidUf)
             LEFT JOIN GrupoCli grp ON grp.gclcodigo = cl.gclcodigo 
-    WHERE EXTRACT(MONTH FROM pd.PedDtBaixa) IN ({latest_month},{current_month}) and EXTRACT(YEAR FROM pd.PedDtBaixa) in ({years}) 
+    WHERE (pd.PedDtBaixa BETWEEN '{date_ini_current}' and '{date_fim_current}' or pd.PedDtBaixa BETWEEN '{date_ini_latest}' and '{date_fim_latest}')
     and pd.PedSitPed in ('B', 'F') and PedDtSaida is not null
     and ( (ps.pdslcfinan = 'S' and pd.pedlcfinanc <> 'L') or  (ps.pdslcfinan = 'N') or  (pd.pedlcfinanc = 'L' and ps.pdslcfinan = 'S'))
     and ( (ps.pdslcetq = 'S' and pd.pedlcestoq <> 'L') or (ps.pdslcetq = 'N') or (ps.pdslcetq = 'S' and pd.pedlcestoq = 'L')) 
     and (fis.FisTpNatOp in ('V', 'R', 'REG', 'REB', 'RG', 'RC', 'RB', 'OS', 'SF'))
-    GROUP BY 1,2,3,8,9,12,13
+    GROUP BY 1,2,3,8,9,12,13,14
     ORDER BY 1 
         ) tmp 
-    group by 1,2,3,10,11,12
+    group by 1,2,3,10,11,12,13
     ORDER BY 1 
     """
 
