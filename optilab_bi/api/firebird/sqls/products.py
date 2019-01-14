@@ -71,7 +71,7 @@ def sql_products_simple():
     AND (TPL.tpldescricao LIKE '%ITOP%' or  TPL.tpldescricao LIKE '%MULTILUX%' ) 
     group by   ANO,  MES,  business_code
     UNION ALL
-    select 'MIDTEAR', 'Geral_Itop',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
+    select 'MIDTEAR', 'Linha_Midtear', sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
     iif( cli.funcodigo = 321, 5, nfs.empcodigo ) business_code, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
