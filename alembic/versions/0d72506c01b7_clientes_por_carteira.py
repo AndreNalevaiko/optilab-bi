@@ -30,17 +30,21 @@ def downgrade():
 def schema_upgrades():
     op.add_column('customer_billing_report', sa.Column('seller', sa.Integer(), nullable=False))
     op.add_column('number_active_customers', sa.Column('seller', sa.Integer(), nullable=False))
+    op.add_column('report_products', sa.Column('seller', sa.Integer(), nullable=False))
 
     op.drop_column('customer_billing_report', 'business_code')
     op.drop_column('number_active_customers', 'business_code')
+    op.drop_column('report_products', 'business_code')
 
 
 def schema_downgrades():
     op.drop_column('customer_billing_report', 'seller')
     op.drop_column('number_active_customers', 'seller')
+    op.drop_column('report_products', 'seller')
 
     op.add_column('number_active_customers', sa.Column('business_code', sa.Integer(), nullable=False))
     op.add_column('customer_billing_report', sa.Column('business_code', sa.Integer(), nullable=False))
+    op.add_column('report_products', sa.Column('business_code', sa.Integer(), nullable=False))
 
 def data_upgrades():
     """Add any optional data upgrade migrations here!"""

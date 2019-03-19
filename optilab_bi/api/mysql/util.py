@@ -98,7 +98,7 @@ def user_has_role(user, roles):
         return True
 
     for role in roles:
-        has_role = role in (role.name for role in user.roles if role.app is None)
+        has_role = role in (role.name for role in user.roles)
 
         if has_role:
             return True

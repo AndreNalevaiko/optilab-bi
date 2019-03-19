@@ -15,26 +15,26 @@ actions = Blueprint('report_products', __name__,
                     url_prefix='/report_products')
 
 
-def append_in_list_global(global_list, original_product):
-    product = copy.deepcopy(original_product)
-    index = None
-    for idx, prod in enumerate(global_list):
-        if prod['brand'] == product['brand'] and prod['label'] == product['label'] \
-            and prod['month'] == product['month'] and prod['year'] == product['year']:
-            index = idx
+# def append_in_list_global(global_list, original_product):
+#     product = copy.deepcopy(original_product)
+#     index = None
+#     for idx, prod in enumerate(global_list):
+#         if prod['brand'] == product['brand'] and prod['label'] == product['label'] \
+#             and prod['month'] == product['month'] and prod['year'] == product['year']:
+#             index = idx
     
-    if index:
-        global_list[index]['amount'] += product['amount']
-        global_list[index]['value'] += product['value']
-    else:
-        product['business_code'] = 0
-        global_list.append(product)
+#     if index:
+#         global_list[index]['amount'] += product['amount']
+#         global_list[index]['value'] += product['value']
+#     else:
+#         product['seller'] = 0
+#         global_list.append(product)
 
-    return global_list
+#     return global_list
 
-def return_latest(list_products, brand, label, business_code, year):
+def return_latest(list_products, brand, label, seller, year):
     result = [record for record in list_products if record['year'] == year and 
-        record['brand'] == brand and record['label'] == label and record['business_code'] == business_code]
+        record['brand'] == brand and record['label'] == label and record['seller'] == seller]
     if len(result):
         result = result[0]
     else:
@@ -65,13 +65,24 @@ def report_products():
         years = '{},{}'.format(str(date_now.year), str(date_now.year - 1))
 
     list_cfop = configuration.get_config('cfop_vendas')
+    # sellers = configuration.get_config('sellers')
+    sellers = '319,320,321,322,318,323'
 
-    sql_pt_1 = sql_products_simple()
-    sql_pt_1 = sql_pt_1.format(list_cfop=list_cfop, month=month, years=years)
-    sql_pt_1 = sql_pt_1.replace('\n', ' ')
+    sql_products_sellers = sql_products_simple()
+    sql_products_sellers = sql_products_sellers.format(
+        list_cfop=list_cfop, month=month, years=years, seller_column='cli.funcodigo', sellers_clause='and cli.funcodigo in ({})'.format(sellers))
+    sql_products_sellers = sql_products_sellers.replace('\n', ' ')
 
-    session.execute(sql_pt_1)
-    result_pt_1 = session.fetchall()
+    session.execute(sql_products_sellers)
+    result_sellers = session.fetchall()
+
+    sql_products_global = sql_products_simple()
+    sql_products_global = sql_products_global.format(
+        list_cfop=list_cfop, month=month, years=years, seller_column='0', sellers_clause=''.format(sellers))
+    sql_products_global = sql_products_global.replace('\n', ' ')
+
+    session.execute(sql_products_global)
+    result_global = session.fetchall()
 
     # sql_pt_1 = sql_all_products_pt_1()
     # sql_pt_1 = sql_pt_1.format(list_cfop=list_cfop, month=month, years=years)
@@ -95,10 +106,10 @@ def report_products():
     # result_pt_3 = session.fetchall()
     
     # results = result_pt_1 + result_pt_2 + result_pt_3
-    results = result_pt_1
+    results = result_sellers + result_global
     list_products = []
 
-    list_products_global = []
+    # list_products_global = []
     
     for column in results:
         product = {}
@@ -106,15 +117,15 @@ def report_products():
         product['label'] = column[1].replace(' ', '').replace('_', ' ')
         product['amount'] = int(column[2])
         product['value'] = column[3]
-        product['business_code'] = column[4]
+        product['seller'] = column[4]
         product['year'] = int(column[5])
         product['month'] = int(column[6])
 
         list_products.append(product)
-        list_products_global = append_in_list_global(list_products_global, product)
+        # list_products_global = append_in_list_global(list_products_global, product)
 
     # Concatena o array com as empresas e o global
-    list_products = list_products + list_products_global
+    list_products = list_products
 
     years_report = [int(y) for y in years.split(',')]
     latest_year = min(years_report)
@@ -124,14 +135,14 @@ def report_products():
 
 
     for record in list_current:
-        select = "SELECT * FROM report_products where brand = '{}' and label = '{}' and business_code = {} and month = {} and year = {}".format(
-            record['brand'],record['label'],record['business_code'],record['month'],current_year
+        select = "SELECT * FROM report_products where brand = '{}' and label = '{}' and seller = {} and month = {} and year = {}".format(
+            record['brand'],record['label'],record['seller'],record['month'],current_year
         )
         try:
             report_products = ReportProducts.query.filter(
                 ReportProducts.brand == record['brand'],
                 ReportProducts.label == record['label'],
-                ReportProducts.business_code == record['business_code'],
+                ReportProducts.seller == record['seller'],
                 ReportProducts.month == record['month'],
                 ReportProducts.current_year == current_year
             ).one_or_none()
@@ -142,7 +153,7 @@ def report_products():
             report_product_duplicated = ReportProducts.query.filter(
                 ReportProducts.brand == record['brand'],
                 ReportProducts.label == record['label'],
-                ReportProducts.business_code == record['business_code'],
+                ReportProducts.seller == record['seller'],
                 ReportProducts.month == record['month'],
                 ReportProducts.current_year == current_year
             ).first()
@@ -152,7 +163,7 @@ def report_products():
             report_products = ReportProducts.query.filter(
                 ReportProducts.brand == record['brand'],
                 ReportProducts.label == record['label'],
-                ReportProducts.business_code == record['business_code'],
+                ReportProducts.seller == record['seller'],
                 ReportProducts.month == record['month'],
                 ReportProducts.current_year == current_year
             ).one_or_none()
@@ -162,7 +173,7 @@ def report_products():
 
             report_products.brand = record['brand']
             report_products.label = record['label']
-            report_products.business_code = record['business_code']
+            report_products.seller = record['seller']
             report_products.status = 'OPENED'
             report_products.current_year = current_year
             report_products.latest_year = latest_year
@@ -171,7 +182,7 @@ def report_products():
         report_products.qtd_current_year = record['amount']
         report_products.value_current_year = record['value']
 
-        latest = return_latest(list_products, record['brand'], record['label'], record['business_code'], latest_year) 
+        latest = return_latest(list_products, record['brand'], record['label'], record['seller'], latest_year) 
         report_products.qtd_latest_year = latest['amount']
         report_products.value_latest_year = latest['value']
 
@@ -195,21 +206,21 @@ def report_products():
 def export_xlsx():
     current_year = request.args.get('year')
     month = request.args.get('month')
-    emp_code = request.args.get('emp_code')
+    seller = request.args.get('seller')
 
-    if not current_year or not month or not emp_code:
+    if not current_year or not month or not seller:
         return 'bad request', 400
 
     result = ReportProducts.query.filter(
         ReportProducts.current_year == current_year,
         ReportProducts.month == month,
-        ReportProducts.business_code == emp_code
+        ReportProducts.seller == seller
     ).all()
 
     data = {
         'marca': [],
         'lente': [],
-        'empresa': [],
+        'carteira': [],
         'mes': [],
         'ano_atual': [],
         'ano_anterior': [],
@@ -222,7 +233,7 @@ def export_xlsx():
     for report in result:
         data['marca'].append(report.brand)
         data['lente'].append(report.label)
-        data['empresa'].append(report.business_code)
+        data['carteira'].append(report.seller)
         data['mes'].append(report.month)
         data['ano_atual'].append(report.current_year)
         data['ano_anterior'].append(report.latest_year)

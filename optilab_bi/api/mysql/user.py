@@ -7,7 +7,7 @@ from optilab_bi.config import API_VERSION
 
 from .util import prepare_response, check_authentication
 
-actions = Blueprint('user', __name__, url_prefix='/user')
+actions = Blueprint('user', __name__, url_prefix='/{}/user'.format(API_VERSION))
 
 logger = logging.getLogger(__name__)
 
@@ -33,18 +33,24 @@ def me(auth_data=None):
 
 def create_api(api):
     api.create_api(User,
-                   methods=['GET'],
+                   methods=['GET', 'PATCH', 'DELETE'],
                    url_prefix='/%s' % API_VERSION,
                    exclude_columns=exclude_user_columns,
                    results_per_page=10,
                    primary_key='id',
                    preprocessors={
                        'GET_SINGLE': [
-                           check_authentication(['user'])
+                           check_authentication(['user'], user_roles_allowed=['admin'])
                        ],
                        'GET_MANY': [
-                           check_authentication(['user'])
-                       ]
+                           check_authentication(['user'], user_roles_allowed=['admin'])
+                       ],
+                       'PATCH_SINGLE': [
+                           check_authentication(['user'], user_roles_allowed=['admin'])
+                       ],
+                       'DELETE_SINGLE': [
+                           check_authentication(['user'], user_roles_allowed=['admin'])
+                       ],
                    },
                    postprocessors={
                    })

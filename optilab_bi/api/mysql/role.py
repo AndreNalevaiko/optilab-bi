@@ -19,10 +19,10 @@ def create_api(api):
                    primary_key='id',
                    preprocessors={
                        'GET_SINGLE': [
-                           check_authentication(['user'])
+                           check_authentication(['user'], user_roles_allowed=['admin'])
                        ],
                        'GET_MANY': [
-                           check_authentication(['user'])
+                           check_authentication(['user'], user_roles_allowed=['admin'])
                        ]
                    },
                    postprocessors={

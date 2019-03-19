@@ -25,7 +25,7 @@ class ReportProducts(ModelBase, db.Model):
     brand = db.Column(db.String(128), nullable=False)
     label = db.Column(db.String(128), nullable=False)
     status = db.Column(db.Enum(*[e.value for e in ReportStatus]), nullable=False)
-    business_code = db.Column(db.Integer(), nullable=False)
+    seller = db.Column(db.Integer(), nullable=False)
     month = db.Column(db.Integer(), nullable=False)
     latest_year = db.Column(db.Integer(), nullable=False)
     current_year = db.Column(db.Integer(), nullable=False)
