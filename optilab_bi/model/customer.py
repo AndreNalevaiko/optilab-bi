@@ -13,6 +13,7 @@ class CustomerBillingReport(ModelBase, db.Model):
     variation = db.Column(db.DECIMAL(asdecimal=False, precision=17, scale=2), nullable=False)
     month = db.Column(db.Integer(), nullable=False)
     year = db.Column(db.Integer(), nullable=False)
+    date = db.Column(db.Date())
 
 class NumberActiveCustomers(ModelBase, db.Model):
     average_latest_year = db.Column(db.DECIMAL(asdecimal=False, precision=17, scale=2), nullable=False)

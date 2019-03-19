@@ -1,3 +1,133 @@
+def sql_products_simple_date():
+    return """
+    select 'Transitions', 'Geral_Transitions', sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
+    {seller_column} seller, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    from notas nfs
+    left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
+                        and nfs.empcodigo = nfp.empcodigo
+    left join produ    pro on pro.procodigo = nfp.procodigo
+    left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
+    left join clien    cli on cli.clicodigo = nfs.clicodigo
+    where  nfs.nfdtemis between '{date_ini}' and '{date_fim}'
+    and nfs.nfsit ='N'   and nfp.nfcodigo is not null AND tpl.tpldescricao is not null
+    and nfs.fiscodigo1 in ({list_cfop}) {sellers_clause}
+    and pro.gr4codigo in  (2,4,5,256)
+    group by   ANO,  MES,  seller
+    UNION ALL
+    select 'Varilux', 'Geral_Varilux', sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
+    {seller_column} seller, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    from notas nfs
+    left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
+                        and nfs.empcodigo = nfp.empcodigo
+    left join produ    pro on pro.procodigo = nfp.procodigo
+    left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
+    left join clien    cli on cli.clicodigo = nfs.clicodigo
+    where  nfs.nfdtemis between '{date_ini}' and '{date_fim}'
+    and nfs.nfsit ='N'   and nfp.nfcodigo is not null AND tpl.tpldescricao is not null
+    and nfs.fiscodigo1 in ({list_cfop}) {sellers_clause}
+    AND (TPL.tpldescricao LIKE '%VLX%' or  TPL.tpldescricao LIKE '%VARILUX%') 
+    group by   ANO,  MES,  seller
+    UNION ALL
+    select 'Kodak', 'Geral_Kodak',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
+    {seller_column} seller, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    from notas nfs
+    left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
+                        and nfs.empcodigo = nfp.empcodigo
+    left join produ    pro on pro.procodigo = nfp.procodigo
+    left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
+    left join clien    cli on cli.clicodigo = nfs.clicodigo
+    where  nfs.nfdtemis between '{date_ini}' and '{date_fim}'
+    and nfs.nfsit ='N' and nfp.nfcodigo is not null AND tpl.tpldescricao is not null
+    and nfs.fiscodigo1 in ({list_cfop}) {sellers_clause}
+    AND (TPL.tpldescricao LIKE '%KODAK%' ) 
+    group by   ANO,  MES,  seller
+    UNION ALL
+    select 'Crizal', 'Geral_Crizal',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
+    {seller_column} seller, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    from notas nfs
+    left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
+                        and nfs.empcodigo = nfp.empcodigo
+    left join produ    pro on pro.procodigo = nfp.procodigo
+    left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
+    left join clien    cli on cli.clicodigo = nfs.clicodigo
+    where  nfs.nfdtemis between '{date_ini}' and '{date_fim}'
+    and nfs.nfsit ='N'   and nfp.nfcodigo is not null AND tpl.tpldescricao is not null
+    and nfs.fiscodigo1 in ({list_cfop}) {sellers_clause}
+    AND (TPL.tpldescricao LIKE '%CRIZAL%' OR TPL.tpldescricao LIKE '%CF UV%' OR TPL.tpldescricao LIKE '%C FORTE UV%'
+    or TPL.tpldescricao LIKE '%C/AR PRIME%')
+    group by   ANO,  MES,  seller
+    UNION ALL
+    select 'Itop', 'Geral_Itop',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
+    {seller_column} seller, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    from notas nfs
+    left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
+                        and nfs.empcodigo = nfp.empcodigo
+    left join produ    pro on pro.procodigo = nfp.procodigo
+    left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
+    left join clien    cli on cli.clicodigo = nfs.clicodigo
+    where  nfs.nfdtemis between '{date_ini}' and '{date_fim}'
+    and nfs.nfsit ='N'   and nfp.nfcodigo is not null AND tpl.tpldescricao is not null
+    and nfs.fiscodigo1 in ({list_cfop}) {sellers_clause}
+    AND (TPL.tpldescricao LIKE '%ITOP%' or  TPL.tpldescricao LIKE '%MULTILUX%' ) 
+    group by   ANO,  MES,  seller
+    UNION ALL
+    select 'TOTAL', 'VS_Conv',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
+    {seller_column} seller, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    from notas nfs
+    left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
+                        and nfs.empcodigo = nfp.empcodigo
+    left join produ    pro on pro.procodigo = nfp.procodigo
+    left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
+    left join clien    cli on cli.clicodigo = nfs.clicodigo
+    where  nfs.nfdtemis between '{date_ini}' and '{date_fim}'
+    and nfs.nfsit ='N'   and nfp.nfcodigo is not null AND tpl.tpldescricao is not null
+    and nfs.fiscodigo1 in ({list_cfop}) and tpl.tpltipo = 'L' and tpl.tplprocesso = 'C'
+    {sellers_clause}
+    group by   ANO,  MES,  seller
+    UNION ALL
+    select 'TOTAL', 'VS_DIG',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
+    {seller_column} seller, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    from notas nfs
+    left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
+                        and nfs.empcodigo = nfp.empcodigo
+    left join produ    pro on pro.procodigo = nfp.procodigo
+    left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
+    left join clien    cli on cli.clicodigo = nfs.clicodigo
+    where  nfs.nfdtemis between '{date_ini}' and '{date_fim}'
+    and nfs.nfsit ='N'   and nfp.nfcodigo is not null AND tpl.tpldescricao is not null
+    and nfs.fiscodigo1 in ({list_cfop}) and tpl.tpltipo = 'L' and tpl.tplprocesso = 'F'
+    {sellers_clause}
+    group by   ANO,  MES,  seller
+    UNION ALL
+    select 'TOTAL', 'Mult_Conv',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
+    {seller_column} seller, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    from notas nfs
+    left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
+                        and nfs.empcodigo = nfp.empcodigo
+    left join produ    pro on pro.procodigo = nfp.procodigo
+    left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
+    left join clien    cli on cli.clicodigo = nfs.clicodigo
+    where  nfs.nfdtemis between '{date_ini}' and '{date_fim}'
+    and nfs.nfsit ='N'   and nfp.nfcodigo is not null AND tpl.tpldescricao is not null
+    and nfs.fiscodigo1 in ({list_cfop}) and tpl.tpltipo = 'M' and tpl.tplprocesso = 'C'
+    {sellers_clause}
+    group by   ANO,  MES,  seller
+    UNION ALL
+    select 'TOTAL', 'Mult_Dig',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
+    {seller_column} seller, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
+    from notas nfs
+    left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo
+                        and nfs.empcodigo = nfp.empcodigo
+    left join produ    pro on pro.procodigo = nfp.procodigo
+    left join tplente  tpl on tpl.tplcodigo = pro.tplcodigo
+    left join clien    cli on cli.clicodigo = nfs.clicodigo
+    where  nfs.nfdtemis between '{date_ini}' and '{date_fim}'
+    and nfs.nfsit ='N'   and nfp.nfcodigo is not null AND tpl.tpldescricao is not null
+    and nfs.fiscodigo1 in ({list_cfop}) and tpl.tpltipo = 'M' and tpl.tplprocesso = 'F'
+    {sellers_clause}
+    group by   ANO,  MES,  seller
+    """
+
 def sql_products_simple():
     return """
     select 'Transitions', 'Geral_Transitions',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
@@ -10,8 +140,8 @@ def sql_products_simple():
     left join clien    cli on cli.clicodigo = nfs.clicodigo
     where   EXTRACT(MONTH FROM nfs.nfdtemis) = {month} and EXTRACT(YEAR FROM nfs.nfdtemis) in ({years})
     and nfs.nfsit ='N'   and nfp.nfcodigo is not null AND tpl.tpldescricao is not null
-    and nfs.fiscodigo1 in ({list_cfop}) {sellers_clause}
-    AND (TPL.tpldescricao LIKE '%TRANS%' )
+    and nfs.fiscodigo1 in ({list_cfop})  {sellers_clause}
+    and pro.gr4codigo in  (2,4,5,256)
     group by   ANO,  MES,  seller
     UNION ALL
     select 'Varilux', 'Geral_Varilux', sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
@@ -71,7 +201,7 @@ def sql_products_simple():
     AND (TPL.tpldescricao LIKE '%ITOP%' or  TPL.tpldescricao LIKE '%MULTILUX%' ) 
     group by   ANO,  MES,  seller
     UNION ALL
-    select 'MIDTEAR', 'Geral_Itop',sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
+    select 'MIDTEAR', 'Linha_Midtear', sum(nfp.nfpqtdade) as qtdade, sum(nfp.nfpqtdade * nfp.nfpunitliquido) as vr_venda_bruta,
     {seller_column} seller, EXTRACT(YEAR FROM nfs.nfdtemis) ANO, EXTRACT(MONTH FROM nfs.nfdtemis) MES
     from notas nfs
     left join nfpro    nfp on nfs.nfcodigo  = nfp.nfcodigo

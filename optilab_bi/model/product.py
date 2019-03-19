@@ -33,6 +33,7 @@ class ReportProducts(ModelBase, db.Model):
     value_latest_year = db.Column(db.DECIMAL(asdecimal=False, precision=17, scale=2), nullable=False)
     qtd_current_year = db.Column(db.Integer(), nullable=False)
     value_current_year = db.Column(db.DECIMAL(asdecimal=False, precision=17, scale=2), nullable=False)
+    date = db.Column(db.Date())
     
 
 # event.listen(Product, 'before_insert', input_audit_data_on_insert)

@@ -21,3 +21,30 @@ def resolve_abstract_inconsistency(abstract):
                 }
     
     return abstract
+
+def get_same_period_date(date):
+    current = date
+    latest = None
+    diff = 0
+
+    while not latest:
+        day = current.day - diff
+        try:
+            if current.month == 1:
+                latest = current.replace(month=12, year=current.year - 1, day=day)
+            else:
+                latest = current.replace(month=current.month -1, day=day)
+        except Exception as e:
+            diff += 1
+
+    return {
+        'current': {
+            'date_ini': current.replace(day=1).strftime('%m/%d/%Y'),
+            'date_fim': current.strftime('%m/%d/%Y')
+        },
+        'latest': {
+            'date_ini': latest.replace(day=1).strftime('%m/%d/%Y'),
+            'date_fim': latest.strftime('%m/%d/%Y')
+        }
+    }
+

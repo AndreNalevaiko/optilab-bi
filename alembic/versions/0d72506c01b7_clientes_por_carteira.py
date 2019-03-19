@@ -1,7 +1,7 @@
 """Clientes por carteira
 
 Revision ID: 0d72506c01b7
-Revises: 8aef47536386
+Revises: 120ea54fb16f
 Create Date: 2019-03-16 15:13:30.574914
 
 """
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '0d72506c01b7'
-down_revision = '8aef47536386'
+down_revision = '120ea54fb16f'
 
 
 def upgrade():
