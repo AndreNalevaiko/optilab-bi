@@ -200,7 +200,7 @@ def report_products():
     list_products = []
     list_products = list_latest
     list_current = list_current
-    import ipdb; ipdb.set_trace()
+    
     years_report = [int(lp['year']) for lp in list_products + list_current]
     latest_year = min(years_report)
     current_year = max(years_report)
