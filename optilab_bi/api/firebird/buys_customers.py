@@ -384,9 +384,11 @@ def generate_current_day_amount(date):
 @actions.route('/_generate', methods=['POST'])
 def _generate():
     data = request.get_json()
-    date = datetime.strptime(data.get('date'), "%Y-%m-%dT%H:%M:%S.%fZ")
 
-    if not date:
+    if data:
+        date = datetime.strptime(data.get('date'), "%Y-%m-%dT%H:%M:%S.%fZ")
+
+    else:
         date = datetime.now() - timedelta(days=1)
 
     date_amount = {

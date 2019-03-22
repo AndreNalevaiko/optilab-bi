@@ -200,7 +200,10 @@ def report_products():
     list_products = []
     list_products = list_latest
     list_current = list_current
-    
+
+    if not list_current and not list_products:
+        return 'No results', 200
+
     years_report = [int(lp['year']) for lp in list_products + list_current]
     latest_year = min(years_report)
     current_year = max(years_report)
