@@ -1,4 +1,8 @@
 SECRET_KEY=op123lab456
 SENDGRID_API_KEY=TESTE
 DATABASE_MYSQL=mysql+pymysql://optilab-bi:optilab-bi@localhost/optilab-bi?charset=utf8mb4
+DATABASE_METRICS=mysql+pymysql://metrics:metrics@localhost/metrics?charset=utf8mb4
 DATABASE_FIREBIRD=firebird+fdb://sysdba:ffracert@localhost:3050/[sgo=sgo.fdb]
+
+BROKER_URL=amqp://guest:guest@localhost:5672/
+CELERY_RESULT_BACKEND=db+mysql+pymysql://celery:celery@localhost/celery

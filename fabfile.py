@@ -18,6 +18,10 @@ def run_like_prod():
     local('export $(cat env_file | xargs) && .venv/bin/gunicorn --config=gunicorn.py run:app')
 
 @task
+def iterative_test():
+    local('export $(cat env_file | xargs) && ipython')
+
+@task
 def build():
 
         local('docker build -t %s:%s --rm .' % (IMAGE_NAME, VERSION))
