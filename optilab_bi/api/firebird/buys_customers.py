@@ -398,6 +398,6 @@ def _generate():
     }
 
     _amount(date_amount)
-    _eval(date)
+    # _eval(date)
 
     return 'OK', 200
