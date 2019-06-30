@@ -83,7 +83,32 @@ def products(auth_data=None):
         'varilux_trans',
         'varilux_digitime',
         'varilux_s',
-        'varilux_x'
+        'varilux_x',
+
+        'outros_fotossensiveis',
+        'transitions_geral',
+        'transitions_acabada',
+        'transitions_bloco_vs_bf',
+        'transitions_mult_conv',
+        'transitions_mult_dig',
+        'transitions_vs_dig',
+        'kodak_geral',
+        'kodak_mult_conv',
+        'kodak_mult_dig',
+        'kodak_vs_conv',
+        'kodak_vs_dig',
+        'kodak_ocupacional',
+        'itop_geral',
+        'itop_mult',
+        'itop_vs_dig',
+        'itop_vs_conv',
+        'crizal_geral',
+        'crizal_vs_conv',
+        'crizal_vs_dig',
+        'crizal_mult_conv',
+        'crizal_mult_dig',
+        'crizal_varilux',
+        'crizal_kodak',
     ]
 
     with db_metrics.connect() as con:
