@@ -1,8 +1,8 @@
 from fabric.api import task, run, local
 
 VERSION = '1.0.0'
-CONTAINER_NAME = 'optilab-bi-api'
-IMAGE_NAME = 'optilab-bi-api/%s' % CONTAINER_NAME
+CONTAINER_NAME = 'optilab_bi_api'
+IMAGE_NAME = 'optilab_bi/%s' % CONTAINER_NAME
 
 @task
 def build():
@@ -21,12 +21,6 @@ def run_like_prod():
 def iterative_test():
     local('export $(cat env_file | xargs) && ipython')
 
-@task
-def build():
-
-        local('docker build -t %s:%s --rm .' % (IMAGE_NAME, VERSION))
-
-        local('docker tag %s:%s %s:latest' % (IMAGE_NAME, VERSION, IMAGE_NAME))
 @task
 def push():
 
