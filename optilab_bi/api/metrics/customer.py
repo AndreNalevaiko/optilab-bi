@@ -44,17 +44,22 @@ def get_customers(auth_data=None):
         if current_month == 1:
             last_month = current_month
 
+        init_date = date.replace(day=1, month=1, year=last_year).strftime('%Y-%m-%d')
+        end_date = date.replace(day=current_day, month=current_month, year=current_year).strftime('%Y-%m-%d')
+
         sql = """
         SELECT 
         c.wallet wallet,
         c.customer customer,
-        sum(IF(year(c.date) = {last_year}, c.total_qtd, 0 )) / 12 avg_month_qtd_last_year,
-        sum(IF(year(c.date) = {last_year}, c.total_value, 0 )) / 12 avg_month_value_last_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.total_qtd, 0 )) / {last_month} avg_month_qtd_current_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.total_value, 0 )) / {last_month} avg_month_value_current_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.total_qtd, 0 )) qtd_current_month,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.total_value, 0 )) value_current_month
+        sum(IF(year(c.date) = {last_year}, c.sold_amount, 0 )) / 12 avg_month_qtd_last_year,
+        sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / 12 avg_month_value_last_year,
+        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount, 0 )) / {last_month} avg_month_qtd_current_year,
+        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
+        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_amount, 0 )) qtd_current_month,
+        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_value, 0 )) value_current_month
         FROM metrics.consolidation c
+        WHERE 1 = 1
+        AND date BETWEEN '{init_date}' AND '{end_date}'
         group by customer, wallet
         """.format(
             current_year=current_year,
@@ -62,6 +67,8 @@ def get_customers(auth_data=None):
             current_month=current_month,
             last_month=last_month,
             current_day=current_day,
+            init_date=init_date,
+            end_date=end_date,
         )
 
         result = con.execute(sql)
@@ -73,43 +80,6 @@ def get_customers(auth_data=None):
 @user_manager.auth_required('user')
 def products(auth_data=None):
     params = request.get_json()
-    result_ = []
-
-    # Fazer get por config
-    metrics_columns = [
-        'varilux_geral',
-        'varilux_trad',
-        'varilux_digital',
-        'varilux_trans',
-        'varilux_digitime',
-        'varilux_s',
-        'varilux_x',
-
-        'outros_fotossensiveis',
-        'transitions_geral',
-        'transitions_acabada',
-        'transitions_bloco_vs_bf',
-        'transitions_mult_conv',
-        'transitions_mult_dig',
-        'transitions_vs_dig',
-        'kodak_geral',
-        'kodak_mult_conv',
-        'kodak_mult_dig',
-        'kodak_vs_conv',
-        'kodak_vs_dig',
-        'kodak_ocupacional',
-        'itop_geral',
-        'itop_mult',
-        'itop_vs_dig',
-        'itop_vs_conv',
-        'crizal_geral',
-        'crizal_vs_conv',
-        'crizal_vs_dig',
-        'crizal_mult_conv',
-        'crizal_mult_dig',
-        'crizal_varilux',
-        'crizal_kodak',
-    ]
 
     with db_metrics.connect() as con:
         customer = params.get('customer')
@@ -125,33 +95,38 @@ def products(auth_data=None):
         if current_month == 1:
             last_month = current_month
 
+        init_date = date.replace(day=1, month=1, year=last_year).strftime('%Y-%m-%d')
+        end_date = date.replace(day=current_day, month=current_month, year=current_year).strftime('%Y-%m-%d')
+
         sql = """
         SELECT
-        '{column}' product,
-        sum(IF(year(c.date) = {last_year}, c.{column}_qtd, 0 )) / 12 avg_month_qtd_last_year,
-        sum(IF(year(c.date) = {last_year}, c.{column}_value, 0 )) / 12 avg_month_value_last_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.{column}_qtd, 0 )) / {last_month} avg_month_qtd_current_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.{column}_value, 0 )) / {last_month} avg_month_value_current_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column}_qtd, 0 )) qtd_current_month,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column}_value, 0 )) value_current_month
+        c.product,
+        c.product_group,
+        sum(IF(year(c.date) = {last_year}, c.sold_amount, 0 )) / 12 avg_month_qtd_last_year,
+        sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / 12 avg_month_value_last_year,
+        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount, 0 )) / {last_month} avg_month_qtd_current_year,
+        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
+        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_amount, 0 )) qtd_current_month,
+        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_value, 0 )) value_current_month
         FROM consolidation c
         WHERE c.customer = '{customer}'
-        group by product
+        AND date BETWEEN '{init_date}' AND '{end_date}'
+        group by product, product_group
         """
 
 
-        for column in metrics_columns:
-            sql_ = sql.format(
-                column=column,
-                current_year=current_year,
-                last_year=last_year,
-                current_month=current_month,
-                last_month=last_month,
-                current_day=current_day,
-                customer=customer
-            )
+        # for column in metrics_columns:
+        sql_ = sql.format(
+            current_year=current_year,
+            last_year=last_year,
+            current_month=current_month,
+            last_month=last_month,
+            current_day=current_day,
+            customer=customer,
+            init_date=init_date,
+            end_date=end_date,
+        )
 
-            result = con.execute(sql_)
-            result_.append(consolidate_result(result)[0])
+        result = con.execute(sql_)
 
-    return jsonify(result_)
+    return jsonify(consolidate_result(result))
