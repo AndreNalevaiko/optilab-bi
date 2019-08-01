@@ -1,6 +1,5 @@
 import decimal
 from datetime import datetime, timedelta
-from calendar import monthrange
 
 from optilab_bi import user_manager, db_metrics
 
@@ -76,6 +75,60 @@ def get_customers(auth_data=None):
         result = consolidate_result(result)
 
     return jsonify(result)
+
+
+@actions.route('/bills_per_month', methods=['POST'])
+@user_manager.auth_required('user')
+def get_bills_per_month(auth_data=None):
+    params = request.get_json()
+    result = {}
+    with db_metrics.connect() as con:
+        date = params.get('date')
+        customer = params.get('customer')
+        period = params.get('period')
+        date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
+
+        current_year = date.year
+        last_year = date.year - 1
+        current_month = date.month
+        last_month = date.month - 1
+        current_day = date.day
+
+        if current_month == 1:
+            last_month = current_month
+        
+        if period == 'last_year':
+            init_date = date.replace(day=1, month=1, year=last_year).strftime('%Y-%m-%d')
+            end_date = date.replace(day=31, month=12, year=last_year).strftime('%Y-%m-%d')
+        else:
+            init_date = date.replace(day=1, month=1, year=current_year).strftime('%Y-%m-%d')
+            end_date = date.replace(day=current_day, month=current_month, year=current_year).strftime('%Y-%m-%d')
+
+        sql = """
+        SELECT 
+        c.customer customer,
+        c.group_customer group_customer,
+        c.wallet wallet,
+        DAY(LAST_DAY(c.date)) last_day_month,
+        MONTH(c.date) month,
+        YEAR(c.date) year,
+        sum(c.sold_amount) month_qtd,
+        sum(c.sold_value) month_value
+        FROM metrics.consolidation c
+        WHERE c.customer = '{customer}'
+        AND c.date BETWEEN '{init_date}' AND '{end_date}'
+        group by customer, group_customer, wallet, last_day_month, month, year;
+        """.format(
+            customer=customer,
+            init_date=init_date,
+            end_date=end_date,
+        )
+
+        result = con.execute(sql)
+        result = consolidate_result(result)
+
+    return jsonify(result)
+
 
 @actions.route('/products', methods=['POST'])
 @user_manager.auth_required('user')
