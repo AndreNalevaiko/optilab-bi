@@ -7,7 +7,8 @@ from optilab_bi import config, db, user_manager
 from optilab_bi.api.firebird import rate_service, billing, report_products, buys_customers, kpi
 from optilab_bi.api.mysql import budget, configuration, user, product, customer, kpi as kpi_api, \
      agreed_date_group, role
-from optilab_bi.api.metrics import customer as cust_metric, product as product_metric, metrics
+from optilab_bi.api.metrics import customer as cust_metric, product as product_metric, metrics, \
+    group_customer as group_customer_metric
 import fdb
 
 
@@ -20,6 +21,7 @@ def create_blueprints(flask_app):
     flask_app.register_blueprint(kpi.actions)
     flask_app.register_blueprint(user.actions)
     flask_app.register_blueprint(cust_metric.actions)
+    flask_app.register_blueprint(group_customer_metric.actions)
     flask_app.register_blueprint(product_metric.actions)
     flask_app.register_blueprint(metrics.actions)
 
