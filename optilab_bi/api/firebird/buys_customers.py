@@ -273,8 +273,6 @@ def _amount(date):
     session.execute(sql_day_global)
     result_day = result_day + session.fetchall()
 
-
-
     session.execute(sql_latest_year_emps)
     result_latest_year = session.fetchall()
     session.execute(sql_latest_year_global)
@@ -401,3 +399,52 @@ def _generate():
     # _eval(date)
 
     return 'OK', 200
+    
+@actions.route('/_tabs_prices', methods=['POST'])
+def _tabs_prices():
+    data = request.get_json()
+
+    sql = """
+    SELECT tab.tbpcodigo, tab.tbpdescricao FROM clitbp ctp
+    join tabpreco tab on ctp.tbpcodigo = tab.tbpcodigo
+    join clien cli on cli.clicodigo = ctp.clicodigo
+    where tab.tbpsituacao = 'A' AND cli.clicodigo = {clicodigo}
+    """
+
+    sql = sql.format(clicodigo=data.get('clicodigo'))
+
+    connection = get_connection()
+    session = connection.cursor()
+
+    session.execute(sql)
+    result = session.fetchall()
+
+    return jsonify([{'tab_codigo': res[0], 'tab_desc': res[1]} for res in result]), 200
+
+
+@actions.route('/_overdue', methods=['POST'])
+def _overdue():
+    data = request.get_json()
+
+    date = datetime.strptime(data.get('date'), "%Y-%m-%dT%H:%M:%S.%fZ")
+
+    sql = """
+    SELECT re.clicodigo, cli.clinomefant, sum(re.RecValorAberto), min(re.recdtvencto)
+    FROM receb re
+    JOIN clien cli on cli.clicodigo = re.clicodigo
+    where re.recdtvencto < '{date}' and re.RecValorAberto >= 0.01
+    and cli.clifornec = 'N'
+    and re.StCodigo in ( 'N', 'C', 'P', 'A', 'J' ) and ( re.RecSituacao = 'N')
+    and cli.clicodigo = {clicodigo}
+    GROUP BY re.clicodigo, cli.clinomefant
+    """
+
+    sql = sql.format(clicodigo=data.get('clicodigo'), date=date.strftime('%Y-%m-%d'))
+    
+    connection = get_connection()
+    session = connection.cursor()
+
+    session.execute(sql)
+    result = session.fetchall()
+
+    return jsonify({'is_overdue': len(result) > 0}), 200

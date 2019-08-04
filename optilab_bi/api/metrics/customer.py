@@ -51,8 +51,8 @@ def get_customers(auth_data=None):
         c.wallet wallet,
         c.customer customer,
         c.group_customer group_customer,
-        sum(IF(year(c.date) = {last_year}, c.sold_amount, 0 )) / 12 avg_month_qtd_last_year,
-        sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / 12 avg_month_value_last_year,
+        sum(IF(year(c.date) = {last_year}, c.sold_amount, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_qtd_last_year,
+        sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_value_last_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount, 0 )) / {last_month} avg_month_qtd_current_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_amount, 0 )) qtd_current_month,
@@ -91,11 +91,7 @@ def get_bills_per_month(auth_data=None):
         current_year = date.year
         last_year = date.year - 1
         current_month = date.month
-        last_month = date.month - 1
         current_day = date.day
-
-        if current_month == 1:
-            last_month = current_month
         
         if period == 'last_year':
             init_date = date.replace(day=1, month=1, year=last_year).strftime('%Y-%m-%d')
@@ -156,8 +152,8 @@ def products(auth_data=None):
         SELECT
         c.product,
         c.product_group,
-        sum(IF(year(c.date) = {last_year}, c.sold_amount, 0 )) / 12 avg_month_qtd_last_year,
-        sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / 12 avg_month_value_last_year,
+        sum(IF(year(c.date) = {last_year}, c.sold_amount, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_qtd_last_year,
+        sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_value_last_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount, 0 )) / {last_month} avg_month_qtd_current_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_amount, 0 )) qtd_current_month,
