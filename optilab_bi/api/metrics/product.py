@@ -21,6 +21,7 @@ select_products_by_wallet = """
     sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_value, 0 )) value_current_month
     FROM consolidation c
     WHERE date BETWEEN '{init_date}' AND '{end_date}'
+    AND c.product_group != ''
     group by product, product_group, wallet
     """
 
@@ -38,6 +39,7 @@ select_products_global = """
     sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_value, 0 )) value_current_month
     FROM consolidation c
     WHERE date BETWEEN '{init_date}' AND '{end_date}'
+    AND c.product_group != ''
     group by product, product_group, _wallet
     """
 
@@ -55,6 +57,7 @@ select_products_others_wallet = """
     FROM consolidation c
     WHERE date BETWEEN '{init_date}' AND '{end_date}'
     AND wallet not in ({wallets})
+    AND c.product_group != ''
     group by product, product_group, _wallet
     """
 

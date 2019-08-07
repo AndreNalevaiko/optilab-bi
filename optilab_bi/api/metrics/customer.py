@@ -60,6 +60,7 @@ def get_customers(auth_data=None):
         FROM metrics.consolidation c
         WHERE 1 = 1
         AND date BETWEEN '{init_date}' AND '{end_date}'
+        AND c.product = '' AND c.product_group = ''
         group by customer, group_customer, wallet
         """.format(
             current_year=current_year,
@@ -113,6 +114,7 @@ def get_bills_per_month(auth_data=None):
         FROM metrics.consolidation c
         WHERE c.customer = '{customer}'
         AND c.date BETWEEN '{init_date}' AND '{end_date}'
+        AND c.product = '' AND c.product_group = ''
         group by customer, group_customer, wallet, last_day_month, month, year;
         """.format(
             customer=customer,
@@ -161,6 +163,7 @@ def products(auth_data=None):
         FROM consolidation c
         WHERE c.customer = '{customer}'
         AND date BETWEEN '{init_date}' AND '{end_date}'
+        AND c.product_group != ''
         group by product, product_group
         """
 
