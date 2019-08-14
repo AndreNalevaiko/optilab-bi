@@ -26,6 +26,8 @@ def _consolidate():
 
     if 'date' in data:
         date = datetime.strptime(data['date'], '%Y-%m-%d')
+    else:
+        date = date.replace(hour=0, minute=0, second=0)
 
     end_at = date
     if 'end_at' in data:
