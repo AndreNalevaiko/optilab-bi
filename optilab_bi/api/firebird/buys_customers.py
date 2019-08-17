@@ -428,23 +428,43 @@ def _overdue():
 
     date = datetime.strptime(data.get('date'), "%Y-%m-%dT%H:%M:%S.%fZ")
 
-    sql = """
-    SELECT re.clicodigo, cli.clinomefant, sum(re.RecValorAberto), min(re.recdtvencto)
-    FROM receb re
-    JOIN clien cli on cli.clicodigo = re.clicodigo
-    where re.recdtvencto < '{date}' and re.RecValorAberto >= 0.01
-    and cli.clifornec = 'N'
-    and re.StCodigo in ( 'N', 'C', 'P', 'A', 'J' ) and ( re.RecSituacao = 'N')
-    and cli.clicodigo = {clicodigo}
-    GROUP BY re.clicodigo, cli.clinomefant
-    """
-
-    sql = sql.format(clicodigo=data.get('clicodigo'), date=date.strftime('%Y-%m-%d'))
-    
     connection = get_connection()
     session = connection.cursor()
 
-    session.execute(sql)
-    result = session.fetchall()
+    if data.get('type') == 'group':
+        sql = """
+        SELECT re.clicodigo, cli.clinomefant, sum(re.RecValorAberto), min(re.recdtvencto)
+        FROM receb re
+        JOIN clien cli on cli.clicodigo = re.clicodigo
+        where re.recdtvencto < '{date}' and re.RecValorAberto >= 0.01
+        and cli.clifornec = 'N'
+        and re.StCodigo in ( 'N', 'C', 'P', 'A', 'J' ) and ( re.RecSituacao = 'N')
+        and cli.gclcodigo = {gclcodigo}
+        GROUP BY re.clicodigo, cli.clinomefant
+        """
 
-    return jsonify({'is_overdue': len(result) > 0}), 200
+        sql = sql.format(gclcodigo=data.get('code'), date=date.strftime('%Y-%m-%d'))
+
+        session.execute(sql)
+        result = session.fetchall()
+
+        return jsonify({'customers_overdued': [r[0] for r in result]}), 200
+
+    elif data.get('type') == 'customer':
+        sql = """
+        SELECT re.clicodigo, cli.clinomefant, sum(re.RecValorAberto), min(re.recdtvencto)
+        FROM receb re
+        JOIN clien cli on cli.clicodigo = re.clicodigo
+        where re.recdtvencto < '{date}' and re.RecValorAberto >= 0.01
+        and cli.clifornec = 'N'
+        and re.StCodigo in ( 'N', 'C', 'P', 'A', 'J' ) and ( re.RecSituacao = 'N')
+        and cli.clicodigo = {clicodigo}
+        GROUP BY re.clicodigo, cli.clinomefant
+        """
+
+        sql = sql.format(clicodigo=data.get('code'), date=date.strftime('%Y-%m-%d'))
+
+        session.execute(sql)
+        result = session.fetchall()
+
+        return jsonify({'is_overdue': len(result) > 0}), 200
