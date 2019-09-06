@@ -45,14 +45,14 @@ def search(auth_data=None):
         if params.get('group_customer'):
             clauses_search.append(" AND c.group_customer like '%%{}%%'".format(params.get('group_customer')))
 
-        sql = f"""
+        sql = """
         SELECT c.wallet wallet, c.customer_code customer_code,c.customer_name customer_name,c.group_customer group_customer
         FROM metrics.consolidation c 
         WHERE 1 = 1
-        {' '.join(clauses_search)}
+        {}
         AND c.product = '' AND c.product_group = '' and customer_name != ''
         group by wallet, customer_code, customer_name, group_customer;
-        """
+        """.format(' '.join(clauses_search))
 
         result = con.execute(sql)
         result = consolidate_result(result)
@@ -247,7 +247,7 @@ def products_all_year(auth_data=None):
         type_ = params.get('type')
         
         if type_:
-            sql = f"""
+            sql = """
             SELECT tp.product name, tp.ld dt, sum(tp.value) value, sum(tp.qtd) / 2 qtd FROM (
                 select c.product, date dt, LAST_DAY(date) ld, sum(c.sold_amount) qtd, sum(c.sold_value) value
                 from consolidation c
@@ -256,9 +256,9 @@ def products_all_year(auth_data=None):
                 GROUP BY dt, ld, product
             ) as tp
             GROUP BY 1,2;
-            """
+            """.format(type_=type_, customer_code=customer_code, init_date=init_date, end_date=end_date)
         else:
-            sql = f"""
+            sql = """
             SELECT tp.product_group name, tp.ld dt, sum(tp.value) value, sum(tp.qtd) / 2 qtd FROM (
                 select c.product_group, date dt, LAST_DAY(date) ld, sum(c.sold_amount) qtd, sum(c.sold_value) value
                 from consolidation c
@@ -268,8 +268,8 @@ def products_all_year(auth_data=None):
             ) as tp
             GROUP BY 1,2
             order by dt asc;
-            """
-            # sql = f"""
+            """.format(customer_code=customer_code, init_date=init_date, end_date=end_date)
+            # sql = """
             # SELECT tp.product_group name, tp.ld dt, sum(tp.value) value, sum(tp.qtd) qtd FROM (
             #     select c.product_group, date dt, LAST_DAY(date) ld, sum(c.sold_amount) qtd, sum(c.sold_value) value
             #     from consolidation c
@@ -278,7 +278,7 @@ def products_all_year(auth_data=None):
             #     GROUP BY dt, ld, product_group
             # ) as tp
             # GROUP BY 1,2;
-            # """
+            # """.format(customer_code=customer_code, init_date=init_date, end_date=end_date)
 
 
         result = consolidate_result(con.execute(sql))
@@ -314,9 +314,9 @@ def products_all_year(auth_data=None):
             for prod in item['products']:
                 # import ipdb; ipdb.set_trace()
                 number = products_names.index(prod['name']) + 1
-                item_data[f'product_{number}_name'] = prod['name']
-                item_data[f'product_{number}_value'] = prod['value']
-                item_data[f'product_{number}_qtd'] = prod['qtd']
+                item_data['product_{number}_name'.format(number=number)] = prod['name']
+                item_data['product_{number}_value'.format(number=number)] = prod['value']
+                item_data['product_{number}_qtd'.format(number=number)] = prod['qtd']
 
             item_data['total_value'] = sum([p['value'] for p in item['products']])
             item_data['total_qtd'] =  sum([p['qtd'] for p in item['products']])
