@@ -402,29 +402,28 @@ def _generate():
     
 @actions.route('/<clicodigo>/_info', methods=['GET'])
 def _clien_infos(clicodigo):
-    clicodigo = clicodigo
-    tables_query = f"""
+    tables_query = """
     SELECT tab.tbpcodigo, tab.tbpdescricao FROM clitbp ctp
     join tabpreco tab on ctp.tbpcodigo = tab.tbpcodigo
     join clien cli on cli.clicodigo = ctp.clicodigo
     where tab.tbpsituacao = 'A' AND cli.clicodigo = {clicodigo}
-    """
+    """.format(clicodigo=clicodigo)
 
-    address_query = f"""
+    address_query = """
     SELECT ec.ENDENDERECO || ' ' || ec.ENDNR || ' ' || ec.ENDCEP || ' ' || ci.CIDNOME || ' ' || ci.CIDUF
     FROM clien cli
     join ENDCLI ec on ec.clicodigo = cli.clicodigo
     join CIDADE ci on ci.CIDCODIGO = ec.CIDCODIGO
     where cli.clicodigo = {clicodigo}
-    """
+    """.format(clicodigo=clicodigo)
 
-    address_query = f"""
+    address_query = """
     SELECT ec.ENDTPRUA log, ec.ENDENDERECO endereco, ec.ENDNR numero ,ec.ENDCEP cep ,ci.CIDNOME cidade, ci.CIDUF estado
     FROM clien cli
     join ENDCLI ec on ec.clicodigo = cli.clicodigo
     join CIDADE ci on ci.CIDCODIGO = ec.CIDCODIGO
     where cli.clicodigo = {clicodigo}
-    """
+    """.format(clicodigo=clicodigo)
 
     connection = get_connection()
     session = connection.cursor()
