@@ -400,26 +400,48 @@ def _generate():
 
     return 'OK', 200
     
-@actions.route('/_tabs_prices', methods=['POST'])
-def _tabs_prices():
-    data = request.get_json()
-
-    sql = """
+@actions.route('/<clicodigo>/_info', methods=['GET'])
+def _clien_infos(clicodigo):
+    tables_query = f"""
     SELECT tab.tbpcodigo, tab.tbpdescricao FROM clitbp ctp
     join tabpreco tab on ctp.tbpcodigo = tab.tbpcodigo
     join clien cli on cli.clicodigo = ctp.clicodigo
     where tab.tbpsituacao = 'A' AND cli.clicodigo = {clicodigo}
     """
 
-    sql = sql.format(clicodigo=data.get('clicodigo'))
+    address_query = f"""
+    SELECT ec.ENDENDERECO || ' ' || ec.ENDNR || ' ' || ec.ENDCEP || ' ' || ci.CIDNOME || ' ' || ci.CIDUF
+    FROM clien cli
+    join ENDCLI ec on ec.clicodigo = cli.clicodigo
+    join CIDADE ci on ci.CIDCODIGO = ec.CIDCODIGO
+    where cli.clicodigo = {clicodigo}
+    """
+
+    address_query = f"""
+    SELECT ec.ENDTPRUA log, ec.ENDENDERECO endereco, ec.ENDNR numero ,ec.ENDCEP cep ,ci.CIDNOME cidade, ci.CIDUF estado
+    FROM clien cli
+    join ENDCLI ec on ec.clicodigo = cli.clicodigo
+    join CIDADE ci on ci.CIDCODIGO = ec.CIDCODIGO
+    where cli.clicodigo = {clicodigo}
+    """
 
     connection = get_connection()
     session = connection.cursor()
 
-    session.execute(sql)
+    session.execute(tables_query)
     result = session.fetchall()
 
-    return jsonify([{'tab_codigo': res[0], 'tab_desc': res[1]} for res in result]), 200
+    tables = [{'tab_codigo': res[0], 'tab_desc': res[1]} for res in result]
+
+    session.execute(address_query)
+    address = session.fetchall()[0]
+    
+    address_view = '%s %s, %s - %s %s-%s' % (address[0], address[1], address[2].replace(' ', ''), address[3], address[4], address[5])
+    address_search = '%s %s %s %s %s' % (address[1], address[2].replace(' ', ''), address[3], address[4], address[5])
+
+    # address = [{'tab_codigo': res[0], 'tab_desc': res[1]} for res in result]
+
+    return jsonify({'tables': tables, 'address': {'view': address_view, 'search': address_search}}), 200
 
 
 @actions.route('/_overdue', methods=['POST'])

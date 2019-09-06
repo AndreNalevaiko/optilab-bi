@@ -10,3 +10,4 @@ Flask-Restless==0.17.0
 pandas==0.19.2
 XlsxWriter==1.0.5
 celery==4.2.1
+simplejson==3.16.0

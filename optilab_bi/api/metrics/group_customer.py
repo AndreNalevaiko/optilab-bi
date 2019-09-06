@@ -50,20 +50,21 @@ def get_customers(auth_data=None):
         sql = """
         SELECT 
         c.wallet wallet,
-        c.customer customer,
+        c.customer_code customer_code,
+        c.customer_name customer_name,
         c.group_customer group_customer,
-        sum(IF(year(c.date) = {last_year}, c.sold_amount, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_qtd_last_year,
+        sum(IF(year(c.date) = {last_year}, c.sold_amount / 2, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_qtd_last_year,
         sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_value_last_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount, 0 )) / {last_month} avg_month_qtd_current_year,
+        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_amount, 0 )) qtd_current_month,
+        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_amount / 2, 0 )) qtd_current_month,
         sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_value, 0 )) value_current_month
         FROM metrics.consolidation c
         WHERE 1 = 1
         AND date BETWEEN '{init_date}' AND '{end_date}'
         AND group_customer = '{group}'
         AND c.product = '' AND c.product_group = ''
-        group by customer, group_customer, wallet
+        group by customer_code, customer_name, group_customer, wallet
         """.format(
             current_year=current_year,
             last_year=last_year,
@@ -107,17 +108,16 @@ def get_bills_per_month(auth_data=None):
         sql = """
         SELECT 
         c.group_customer group_customer,
-        c.wallet wallet,
         DAY(LAST_DAY(c.date)) last_day_month,
         MONTH(c.date) month,
         YEAR(c.date) year,
-        sum(c.sold_amount) month_qtd,
+        sum(c.sold_amount) / 2 month_qtd,
         sum(c.sold_value) month_value
         FROM metrics.consolidation c
         WHERE c.group_customer = '{group_customer}'
         AND c.date BETWEEN '{init_date}' AND '{end_date}'
         AND c.product = '' AND c.product_group = ''
-        group by group_customer, wallet, last_day_month, month, year;
+        group by group_customer, last_day_month, month, year;
         """.format(
             group_customer=group_customer,
             init_date=init_date,
@@ -155,11 +155,11 @@ def products(auth_data=None):
         SELECT
         c.product,
         c.product_group,
-        sum(IF(year(c.date) = {last_year}, c.sold_amount, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_qtd_last_year,
+        sum(IF(year(c.date) = {last_year}, c.sold_amount / 2, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_qtd_last_year,
         sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_value_last_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount, 0 )) / {last_month} avg_month_qtd_current_year,
+        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_amount, 0 )) qtd_current_month,
+        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_amount / 2, 0 )) qtd_current_month,
         sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_value, 0 )) value_current_month
         FROM consolidation c
         WHERE c.group_customer = '{group}'

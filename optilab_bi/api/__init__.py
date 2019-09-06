@@ -4,18 +4,18 @@ from flask import Flask
 from flask_cors import CORS
 from flask_restless.manager import APIManager
 from optilab_bi import config, db, user_manager
-from optilab_bi.api.firebird import rate_service, billing, report_products, buys_customers, kpi
+from optilab_bi.api.firebird import rate_service, report_products, buys_customers, kpi
 from optilab_bi.api.mysql import budget, configuration, user, product, customer, kpi as kpi_api, \
      agreed_date_group, role
 from optilab_bi.api.metrics import customer as cust_metric, product as product_metric, metrics, \
-    group_customer as group_customer_metric
+    group_customer as group_customer_metric, billing as billing_metric
 import fdb
 
 
 
 def create_blueprints(flask_app):
     flask_app.register_blueprint(rate_service.actions)
-    flask_app.register_blueprint(billing.actions)
+    # flask_app.register_blueprint(billing.actions)
     flask_app.register_blueprint(report_products.actions)
     flask_app.register_blueprint(buys_customers.actions)
     flask_app.register_blueprint(kpi.actions)
@@ -24,6 +24,7 @@ def create_blueprints(flask_app):
     flask_app.register_blueprint(group_customer_metric.actions)
     flask_app.register_blueprint(product_metric.actions)
     flask_app.register_blueprint(metrics.actions)
+    flask_app.register_blueprint(billing_metric.actions)
 
 def create_apis(api):
     budget.create_api(api)
