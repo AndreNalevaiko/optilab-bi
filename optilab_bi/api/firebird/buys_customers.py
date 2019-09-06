@@ -402,6 +402,7 @@ def _generate():
     
 @actions.route('/<clicodigo>/_info', methods=['GET'])
 def _clien_infos(clicodigo):
+    clicodigo = clicodigo
     tables_query = f"""
     SELECT tab.tbpcodigo, tab.tbpdescricao FROM clitbp ctp
     join tabpreco tab on ctp.tbpcodigo = tab.tbpcodigo
