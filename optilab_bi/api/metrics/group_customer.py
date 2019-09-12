@@ -47,6 +47,11 @@ def get_customers(auth_data=None):
 
         init_date = date.replace(day=1, month=1, year=last_year).strftime('%Y-%m-%d')
         end_date = date.replace(day=current_day, month=current_month, year=current_year).strftime('%Y-%m-%d')
+
+        column_current_values = 'sold'
+        if params.get('date_type', '') == 'created':
+            column_current_values = 'accumulated_sold'
+
         sql = """
         SELECT 
         c.wallet wallet,
@@ -57,8 +62,8 @@ def get_customers(auth_data=None):
         sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_value_last_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_amount / 2, 0 )) qtd_current_month,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_value, 0 )) value_current_month
+        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_amount / 2, 0 )) qtd_current_month,
+        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_value, 0 )) value_current_month
         FROM metrics.consolidation c
         WHERE 1 = 1
         AND date BETWEEN '{init_date}' AND '{end_date}'
@@ -74,6 +79,7 @@ def get_customers(auth_data=None):
             init_date=init_date,
             end_date=end_date,
             group=group,
+            column_current_values=column_current_values,
         )
 
         result = con.execute(sql)
@@ -151,6 +157,10 @@ def products(auth_data=None):
         init_date = date.replace(day=1, month=1, year=last_year).strftime('%Y-%m-%d')
         end_date = date.replace(day=current_day, month=current_month, year=current_year).strftime('%Y-%m-%d')
 
+        column_current_values = 'sold'
+        if params.get('date_type', '') == 'created':
+            column_current_values = 'accumulated_sold'
+
         sql = """
         SELECT
         c.product,
@@ -159,13 +169,18 @@ def products(auth_data=None):
         sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_value_last_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_amount / 2, 0 )) qtd_current_month,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_value, 0 )) value_current_month
+        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_amount / 2, 0 )) qtd_current_month,
+        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_value, 0 )) value_current_month
         FROM consolidation c
         WHERE c.group_customer = '{group}'
         AND date BETWEEN '{init_date}' AND '{end_date}'
         AND c.product_group != ''
         group by product, product_group
+        ORDER BY 
+            CASE 
+            WHEN c.product_group IN ('CRIZAL*', 'TRANSITIONS*') THEN 'WWWW'
+            WHEN c.product_group like '%%VARILUX%%' THEN 'AAA'
+            ELSE c.product_group END asc
         """
 
 
@@ -179,6 +194,7 @@ def products(auth_data=None):
             group=group,
             init_date=init_date,
             end_date=end_date,
+            column_current_values=column_current_values,
         )
 
         result = con.execute(sql_)

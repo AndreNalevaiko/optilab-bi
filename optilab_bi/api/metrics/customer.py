@@ -85,6 +85,10 @@ def get_customers(auth_data=None):
         if params.get('customer_code'):
             custom_where = " AND c.customer_code = '%s'" % params.get('customer_code')
 
+        column_current_values = 'sold'
+        if params.get('date_type', '') == 'created':
+            column_current_values = 'accumulated_sold'
+
         sql = """
         SELECT 
         c.wallet wallet,
@@ -95,8 +99,8 @@ def get_customers(auth_data=None):
         sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_value_last_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_amount / 2, 0 )) qtd_current_month,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_value, 0 )) value_current_month
+        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_amount / 2, 0 )) qtd_current_month,
+        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_value, 0 )) value_current_month
         FROM metrics.consolidation c
         WHERE 1 = 1
         AND date BETWEEN '{init_date}' AND '{end_date}'
@@ -112,6 +116,7 @@ def get_customers(auth_data=None):
             init_date=init_date,
             end_date=end_date,
             custom_where=custom_where,
+            column_current_values=column_current_values,
         )
 
         result = con.execute(sql)
@@ -193,6 +198,10 @@ def products(auth_data=None):
         init_date = date.replace(day=1, month=1, year=last_year).strftime('%Y-%m-%d')
         end_date = date.replace(day=current_day, month=current_month, year=current_year).strftime('%Y-%m-%d')
 
+        column_current_values = 'sold'
+        if params.get('date_type', '') == 'created':
+            column_current_values = 'accumulated_sold'
+
         sql = """
         SELECT
         c.product,
@@ -201,15 +210,18 @@ def products(auth_data=None):
         sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_value_last_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
         sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_amount / 2, 0 )) qtd_current_month,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_value, 0 )) value_current_month
+        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_amount / 2, 0 )) qtd_current_month,
+        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_value, 0 )) value_current_month
         FROM consolidation c
         WHERE c.customer_code = '{customer_code}'
         AND date BETWEEN '{init_date}' AND '{end_date}'
         AND c.product_group != ''
         group by product, product_group
-        ORDER BY CASE WHEN c.product_group IN ('CRIZAL*', 'TRANSITIONS*') THEN 'WWWW'
-              ELSE c.product_group END asc
+        ORDER BY 
+            CASE 
+            WHEN c.product_group IN ('CRIZAL*', 'TRANSITIONS*') THEN 'WWWW'
+            WHEN c.product_group like '%%VARILUX%%' THEN 'AAA'
+            ELSE c.product_group END asc
         """
 
 
@@ -223,6 +235,7 @@ def products(auth_data=None):
             customer_code=customer_code,
             init_date=init_date,
             end_date=end_date,
+            column_current_values=column_current_values,
         )
 
         result = con.execute(sql_)
@@ -245,22 +258,29 @@ def products_all_year(auth_data=None):
         end_date = date.strftime('%Y-%m-%d')
         customer_code = params.get('customer_code')
         type_ = params.get('type')
+
+        columns_values = 'sum(c.sold_amount) qtd, sum(c.sold_value) value'
+        if params.get('date_type', '') == 'created':
+            columns_values = """if(year(date) = year('{end_date}') and month(date) = month('{end_date}'), 
+            sum(c.accumulated_sold_amount), sum(c.sold_amount)) qtd,
+            if(year(date) = year('{end_date}') and month(date) = month('{end_date}'), 
+            sum(c.accumulated_sold_value), sum(c.sold_value)) value""".format(end_date=end_date)
         
         if type_:
             sql = """
             SELECT tp.product name, tp.ld dt, sum(tp.value) value, sum(tp.qtd) / 2 qtd FROM (
-                select c.product, date dt, LAST_DAY(date) ld, sum(c.sold_amount) qtd, sum(c.sold_value) value
+                select c.product, date dt, LAST_DAY(date) ld, {columns_values}
                 from consolidation c
                 where c.product_group = '{type_}' and product != ''
                 and c.customer_code = {customer_code} and date BETWEEN '{init_date}' AND '{end_date}'
                 GROUP BY dt, ld, product
             ) as tp
             GROUP BY 1,2;
-            """.format(type_=type_, customer_code=customer_code, init_date=init_date, end_date=end_date)
+            """.format(type_=type_, customer_code=customer_code, init_date=init_date, end_date=end_date, columns_values=columns_values)
         else:
             sql = """
             SELECT tp.product_group name, tp.ld dt, sum(tp.value) value, sum(tp.qtd) / 2 qtd FROM (
-                select c.product_group, date dt, LAST_DAY(date) ld, sum(c.sold_amount) qtd, sum(c.sold_value) value
+                select c.product_group, date dt, LAST_DAY(date) ld, {columns_values}
                 from consolidation c
                 where c.product_group != '' and c.product = ''
                 and c.customer_code = {customer_code} and date BETWEEN '{init_date}' AND '{end_date}'
@@ -268,7 +288,7 @@ def products_all_year(auth_data=None):
             ) as tp
             GROUP BY 1,2
             order by dt asc;
-            """.format(customer_code=customer_code, init_date=init_date, end_date=end_date)
+            """.format(customer_code=customer_code, init_date=init_date, end_date=end_date, columns_values=columns_values)
             # sql = """
             # SELECT tp.product_group name, tp.ld dt, sum(tp.value) value, sum(tp.qtd) qtd FROM (
             #     select c.product_group, date dt, LAST_DAY(date) ld, sum(c.sold_amount) qtd, sum(c.sold_value) value
@@ -280,7 +300,7 @@ def products_all_year(auth_data=None):
             # GROUP BY 1,2;
             # """.format(customer_code=customer_code, init_date=init_date, end_date=end_date)
 
-
+        # import ipdb; ipdb.set_trace()
         result = consolidate_result(con.execute(sql))
 
         response = []
@@ -305,21 +325,22 @@ def products_all_year(auth_data=None):
         products_names = []
 
         for prod in result:
-            if prod['name'] not in products_names:
+            # if prod['name'] not in products_names:
+            if prod['name'] not in products_names and prod['value'] and prod['qtd']:
                 products_names.append(prod['name'])
 
         for item in response:
             item_data = {'data': item['data']}
 
             for prod in item['products']:
-                # import ipdb; ipdb.set_trace()
-                number = products_names.index(prod['name']) + 1
-                item_data['product_{number}_name'.format(number=number)] = prod['name']
-                item_data['product_{number}_value'.format(number=number)] = prod['value']
-                item_data['product_{number}_qtd'.format(number=number)] = prod['qtd']
-
-            item_data['total_value'] = sum([p['value'] for p in item['products']])
-            item_data['total_qtd'] =  sum([p['qtd'] for p in item['products']])
+                if prod['name'] in products_names:
+                    number = products_names.index(prod['name']) + 1
+                    item_data['product_{number}_name'.format(number=number)] = prod['name']
+                    item_data['product_{number}_value'.format(number=number)] = prod['value']
+                    item_data['product_{number}_qtd'.format(number=number)] = prod['qtd']
+            
+            item_data['total_value'] = sum([p['value'] for p in item['products'] if p['value']])
+            item_data['total_qtd'] =  sum([p['qtd'] for p in item['products'] if p['qtd']])
             products.append(item_data)
 
 
