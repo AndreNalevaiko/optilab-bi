@@ -52,30 +52,71 @@ def get_customers(auth_data=None):
         if params.get('date_type', '') == 'created':
             column_current_values = 'accumulated_sold'
 
+        # sql = """
+        # SELECT 
+        # c.wallet wallet,
+        # c.customer_code customer_code,
+        # c.customer_name customer_name,
+        # c.group_customer group_customer,
+        # sum(IF(year(c.date) = {last_year}, c.sold_amount / 2, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_qtd_last_year,
+        # sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_value_last_year,
+        # sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
+        # sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
+        # sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_amount / 2, 0 )) qtd_current_month,
+        # sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_value, 0 )) value_current_month
+        # FROM metrics.consolidation c
+        # WHERE 1 = 1
+        # AND date BETWEEN '{init_date}' AND '{end_date}'
+        # AND group_customer = '{group}'
+        # AND c.product = '' AND c.product_group = ''
+        # group by customer_code, customer_name, group_customer, wallet
+        # """.format(
+        #     current_year=current_year,
+        #     last_year=last_year,
+        #     current_month=current_month,
+        #     last_month=last_month,
+        #     current_day=current_day,
+        #     init_date=init_date,
+        #     end_date=end_date,
+        #     group=group,
+        #     column_current_values=column_current_values,
+        # )
+
         sql = """
         SELECT 
-        c.wallet wallet,
-        c.customer_code customer_code,
-        c.customer_name customer_name,
-        c.group_customer group_customer,
-        sum(IF(year(c.date) = {last_year}, c.sold_amount / 2, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_qtd_last_year,
-        sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_value_last_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_amount / 2, 0 )) qtd_current_month,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_value, 0 )) value_current_month
-        FROM metrics.consolidation c
-        WHERE 1 = 1
-        AND date BETWEEN '{init_date}' AND '{end_date}'
-        AND group_customer = '{group}'
-        AND c.product = '' AND c.product_group = ''
-        group by customer_code, customer_name, group_customer, wallet
+        tmp.wallet wallet,
+        tmp.customer_code customer_code,
+        tmp.customer_name customer_name,
+        tmp.group_customer group_customer,
+        AVG(if(tmp.year = {last_year} and tmp.amount_solded > 0, tmp.amount_solded / 2, null)) avg_month_qtd_last_year,
+        AVG(if(tmp.year = {last_year} and tmp.value_solded > 0, tmp.value_solded, null)) avg_month_value_last_year,
+        AVG(if(tmp.year = {current_year} and tmp.month <= {last_month} and tmp.amount_solded > 0, tmp.amount_solded / 2, null)) avg_month_qtd_current_year,
+        AVG(if(tmp.year = {current_year} and tmp.month <= {last_month} and tmp.value_solded > 0, tmp.value_solded, null)) avg_month_value_current_year,
+        SUM(IF(tmp.year = {current_year} and tmp.month = {current_month}, tmp.amount_solded / 2, 0)) qtd_current_month,
+        SUM(IF(tmp.year = {current_year} and tmp.month = {current_month}, tmp.value_solded, 0)) value_current_month
+        FROM (
+            SELECT 
+            c.wallet wallet,
+            c.customer_code customer_code,
+            c.customer_name customer_name,
+            c.group_customer group_customer,
+            MONTH(c.date) month,
+            YEAR(c.date) year,
+            SUM(c.{column_current_values}_amount) amount_solded,
+            SUM(c.{column_current_values}_value) value_solded
+            FROM metrics.consolidation c
+            WHERE 1 = 1
+            AND date BETWEEN '{init_date}' AND '{end_date}'
+            AND group_customer = '{group}'
+            AND c.product = '' AND c.product_group = ''
+            group by 1,2,3,4,5,6
+        ) as tmp
+        GROUP BY 1,2,3,4;
         """.format(
             current_year=current_year,
             last_year=last_year,
             current_month=current_month,
             last_month=last_month,
-            current_day=current_day,
             init_date=init_date,
             end_date=end_date,
             group=group,
@@ -161,36 +202,66 @@ def products(auth_data=None):
         if params.get('date_type', '') == 'created':
             column_current_values = 'accumulated_sold'
 
+        # sql = """
+        # SELECT
+        # c.product,
+        # c.product_group,
+        # sum(IF(year(c.date) = {last_year}, c.sold_amount / 2, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_qtd_last_year,
+        # sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_value_last_year,
+        # sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
+        # sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
+        # sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_amount / 2, 0 )) qtd_current_month,
+        # sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_value, 0 )) value_current_month
+        # FROM consolidation c
+        # WHERE c.group_customer = '{group}'
+        # AND date BETWEEN '{init_date}' AND '{end_date}'
+        # AND c.product_group != ''
+        # group by product, product_group
+        # ORDER BY 
+        #     CASE 
+        #     WHEN c.product_group IN ('CRIZAL*', 'TRANSITIONS*') THEN 'WWWW'
+        #     WHEN c.product_group like '%%VARILUX%%' THEN 'AAA'
+        #     ELSE c.product_group END asc
+        # """
+
         sql = """
-        SELECT
-        c.product,
-        c.product_group,
-        sum(IF(year(c.date) = {last_year}, c.sold_amount / 2, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_qtd_last_year,
-        sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_value_last_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_amount / 2, 0 )) qtd_current_month,
-        sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_value, 0 )) value_current_month
-        FROM consolidation c
-        WHERE c.group_customer = '{group}'
-        AND date BETWEEN '{init_date}' AND '{end_date}'
-        AND c.product_group != ''
-        group by product, product_group
+        SELECT 
+        tmp.product,
+        tmp.product_group,
+        AVG(if(tmp.year = {last_year} and tmp.amount_solded > 0, tmp.amount_solded / 2, null)) avg_month_qtd_last_year,
+        AVG(if(tmp.year = {last_year} and tmp.value_solded > 0, tmp.value_solded, null)) avg_month_value_last_year,
+        AVG(if(tmp.year = {current_year} and tmp.month <= {last_month} and tmp.amount_solded > 0, tmp.amount_solded / 2, null)) avg_month_qtd_current_year,
+        AVG(if(tmp.year = {current_year} and tmp.month <= {last_month} and tmp.value_solded > 0, tmp.value_solded, null)) avg_month_value_current_year,
+        SUM(IF(tmp.year = {current_year} and tmp.month = {current_month}, tmp.amount_solded / 2, 0)) qtd_current_month,
+        SUM(IF(tmp.year = {current_year} and tmp.month = {current_month}, tmp.value_solded, 0)) value_current_month
+        FROM (
+            SELECT 
+            c.product product,
+            c.product_group product_group,
+            MONTH(c.date) month,
+            YEAR(c.date) year,
+            SUM(c.{column_current_values}_amount) amount_solded,
+            SUM(c.{column_current_values}_value) value_solded
+            FROM metrics.consolidation c
+            WHERE c.group_customer = '{group}'
+            AND date BETWEEN '{init_date}' AND '{end_date}'
+            AND c.product_group != ''
+            GROUP BY 1,2,3,4
+        ) as tmp
+        GROUP BY 1,2
         ORDER BY 
             CASE 
-            WHEN c.product_group IN ('CRIZAL*', 'TRANSITIONS*') THEN 'WWWW'
-            WHEN c.product_group like '%%VARILUX%%' THEN 'AAA'
-            ELSE c.product_group END asc
+            WHEN tmp.product_group IN ('CRIZAL*', 'TRANSITIONS*') THEN 'WWWW'
+            WHEN tmp.product_group like '%%VARILUX%%' THEN 'AAA'
+            ELSE tmp.product_group END asc;
         """
 
 
-        # for column in metrics_columns:
         sql_ = sql.format(
             current_year=current_year,
             last_year=last_year,
             current_month=current_month,
             last_month=last_month,
-            current_day=current_day,
             group=group,
             init_date=init_date,
             end_date=end_date,
