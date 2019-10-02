@@ -1,5 +1,6 @@
 import decimal
 from datetime import datetime, timedelta, date
+import dateutil.relativedelta
 from calendar import monthrange
 
 from optilab_bi import user_manager, db_metrics
@@ -13,10 +14,10 @@ select_products_by_wallet = """
     c.product,
     c.product_group,
     c.wallet wallet,
-    sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
-    sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
-    sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_amount / 2, 0 )) qtd_current_month,
-    sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_value, 0 )) value_current_month
+    sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.{column_current_values}_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
+    sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.{column_current_values}_value, 0 )) / {last_month} avg_month_value_current_year,
+    sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_amount / 2, 0 )) qtd_current_month,
+    sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_value, 0 )) value_current_month
     FROM consolidation c
     WHERE date BETWEEN '{init_date}' AND '{end_date}'
     AND wallet in ({wallets})
@@ -32,10 +33,10 @@ select_products_global = """
     c.product,
     c.product_group,
     '0' _wallet,
-    sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
-    sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
-    sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_amount / 2, 0 )) qtd_current_month,
-    sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_value, 0 )) value_current_month
+    sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.{column_current_values}_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
+    sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.{column_current_values}_value, 0 )) / {last_month} avg_month_value_current_year,
+    sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_amount / 2, 0 )) qtd_current_month,
+    sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_value, 0 )) value_current_month
     FROM consolidation c
     WHERE date BETWEEN '{init_date}' AND '{end_date}'
     AND c.product_group != ''
@@ -49,10 +50,10 @@ select_products_others_wallet = """
     c.product,
     c.product_group,
     '' _wallet,
-    sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
-    sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
-    sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_amount / 2, 0 )) qtd_current_month,
-    sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.sold_value, 0 )) value_current_month
+    sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.{column_current_values}_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
+    sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.{column_current_values}_value, 0 )) / {last_month} avg_month_value_current_year,
+    sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_amount / 2, 0 )) qtd_current_month,
+    sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_value, 0 )) value_current_month
     FROM consolidation c
     WHERE date BETWEEN '{init_date}' AND '{end_date}'
     AND wallet not in ({wallets})
@@ -108,7 +109,11 @@ def products(auth_data=None):
         if current_month == 1:
             last_month = current_month
 
-        init_date = date.replace(day=1, month=1, year=last_year).strftime('%Y-%m-%d')
+        column_current_values = 'sold'
+        if params.get('date_type', '') == 'created':
+            column_current_values = 'accumulated_sold'
+
+        init_date = date.replace(day=1, month=1, year=current_year).strftime('%Y-%m-%d')
         end_date = date.replace(day=current_day, month=current_month, year=current_year).strftime('%Y-%m-%d')
 
         wallets = ",".join(wallets)
@@ -125,7 +130,8 @@ def products(auth_data=None):
             current_day=current_day,
             init_date=init_date,
             end_date=end_date,
-            wallets=wallets
+            column_current_values=column_current_values,
+            wallets=wallets,
             )
 
             result = con.execute(sql)
@@ -149,20 +155,24 @@ def pillars_all_year(auth_data=None):
         init_date = init_date.strftime('%Y-%m-%d')
         end_date = date.strftime('%Y-%m-%d')
 
+        column_current_values = 'sold'
+        if params.get('date_type', '') == 'created':
+            column_current_values = 'accumulated_sold'
+
         sql = """
         SELECT tp.wallet wallet, tp.product_group product_group, tp.ld dt, sum(tp.value) value FROM (
-        SELECT wallet, product_group, date dt , LAST_DAY(date) ld, sum(sold_value) value
+        SELECT wallet, product_group, date dt , LAST_DAY(date) ld, sum({column_current_values}_value) value
         FROM metrics.consolidation 
         where product_group != '' and date between '{init_date}' AND '{end_date}'
         and wallet in ({wallets})
         GROUP BY wallet, dt, ld, product_group
         UNION ALL
-        SELECT '0' wallet, product_group, date dt , LAST_DAY(date) ld, sum(sold_value) value
+        SELECT '0' wallet, product_group, date dt , LAST_DAY(date) ld, sum({column_current_values}_value) value
         FROM metrics.consolidation 
         where product_group != '' and date between '{init_date}' AND '{end_date}'
         GROUP BY dt, ld, product_group
         UNION ALL
-        SELECT '' wallet, product_group, date dt , LAST_DAY(date) ld, sum(sold_value) value
+        SELECT '' wallet, product_group, date dt , LAST_DAY(date) ld, sum({column_current_values}_value) value
         FROM metrics.consolidation
         where product_group != '' and date between '{init_date}' AND '{end_date}'
         and wallet not in ({wallets})
@@ -176,6 +186,7 @@ def pillars_all_year(auth_data=None):
         sql = sql.format(
             init_date=init_date,
             end_date=end_date,
+            column_current_values=column_current_values,
             wallets=wallets,
         )
 
@@ -209,3 +220,50 @@ def pillars_all_year(auth_data=None):
                 response.append({'wallet': item['wallet'], 'products': []})
 
     return jsonify(response)
+
+
+@actions.route('/bills_per_month', methods=['POST'])
+@user_manager.auth_required('user')
+def get_bills_per_month(auth_data=None):
+    params = request.get_json()
+    result = {}
+    with db_metrics.connect() as con:
+        date = params.get('date')
+        wallet = params.get('wallet')
+        product_group = params.get('product_group')
+        date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
+        last_month = date - dateutil.relativedelta.relativedelta(months=1)
+
+        if date.year != last_month.year:
+            init_date = date.replace(day=1, month=1, year=date.year-1).strftime('%Y-%m-%d')
+        else:
+            init_date = date.replace(day=1, month=1).strftime('%Y-%m-%d')
+
+        end_date = date.strftime('%Y-%m-%d')
+
+        sql = """
+        SELECT 
+        c.product_group product_group,
+        c.product product_name,
+        c.wallet wallet,
+        DAY(LAST_DAY(c.date)) last_day_month,
+        MONTH(c.date) month,
+        YEAR(c.date) year,
+        sum(c.sold_amount) / 2 month_qtd,
+        sum(c.sold_value) month_value
+        FROM metrics.consolidation c
+        WHERE c.product_group = '{product_group}'
+        AND c.date BETWEEN '{init_date}' AND LAST_DAY('{end_date}')
+        AND wallet = {wallet}
+        group by product_group, product_name, wallet, last_day_month, month, year;
+        """.format(
+            product_group=product_group,
+            wallet=wallet,
+            init_date=init_date,
+            end_date=end_date,
+        )
+
+        result = con.execute(sql)
+        result = consolidate_result(result)
+
+    return jsonify(result)
