@@ -454,15 +454,33 @@ def _overdue():
     session = connection.cursor()
 
     if data.get('type') == 'group':
+        # sql = """
+        # SELECT re.clicodigo, cli.clinomefant, sum(re.RecValorAberto), min(re.recdtvencto)
+        # FROM receb re
+        # JOIN clien cli on cli.clicodigo = re.clicodigo
+        # where re.recdtvencto < '{date}' and re.RecValorAberto >= 0.01
+        # and cli.clifornec = 'N'
+        # and re.StCodigo in ( 'N', 'C', 'P', 'A', 'J' ) and ( re.RecSituacao = 'N')
+        # and cli.gclcodigo = {gclcodigo}
+        # GROUP BY re.clicodigo, cli.clinomefant
+        # """
+
         sql = """
-        SELECT re.clicodigo, cli.clinomefant, sum(re.RecValorAberto), min(re.recdtvencto)
+        SELECT 
+        re.clicodigo,
+        cli.clinomefant,
+        REPLACE(re.RECNRDOC, '.', '') n_doc,
+        iif(char_length(re.RECPARCELA) = 4, 
+            substring(re.RECPARCELA from 1 for 2) || '/' || substring(re.RECPARCELA from 3 for 2), re.RECPARCELA) parcela,
+        sum(re.RecValorAberto) vlr_aberto,
+        min(re.recdtvencto) dt_vcto
         FROM receb re
         JOIN clien cli on cli.clicodigo = re.clicodigo
         where re.recdtvencto < '{date}' and re.RecValorAberto >= 0.01
         and cli.clifornec = 'N'
         and re.StCodigo in ( 'N', 'C', 'P', 'A', 'J' ) and ( re.RecSituacao = 'N')
         and cli.gclcodigo = {gclcodigo}
-        GROUP BY re.clicodigo, cli.clinomefant
+        GROUP BY 1,2,3,4
         """
 
         sql = sql.format(gclcodigo=data.get('code'), date=date.strftime('%Y-%m-%d'))
@@ -470,18 +488,33 @@ def _overdue():
         session.execute(sql)
         result = session.fetchall()
 
-        return jsonify({'customers_overdued': [r[0] for r in result]}), 200
+        billings_overdued = []
+        for bill in result:
+            billings_overdued.append({
+                'clicodigo': bill[0],
+                'customer_name': bill[1],
+                'document_number': bill[2],
+                'installment': bill[3],
+                'value': bill[4],
+                'overdue_date': str(bill[5]),
+            })
+
+        return jsonify({'billings_overdued': billings_overdued}), 200
 
     elif data.get('type') == 'customer':
         sql = """
-        SELECT re.clicodigo, cli.clinomefant, sum(re.RecValorAberto), min(re.recdtvencto)
+        SELECT REPLACE(re.RECNRDOC, '.', '') n_doc,
+        iif(char_length(re.RECPARCELA) = 4, 
+            substring(re.RECPARCELA from 1 for 2) || '/' || substring(re.RECPARCELA from 3 for 2), re.RECPARCELA) parcela,
+        sum(re.RecValorAberto) vlr_aberto,
+        min(re.recdtvencto) dt_vcto
         FROM receb re
         JOIN clien cli on cli.clicodigo = re.clicodigo
         where re.recdtvencto < '{date}' and re.RecValorAberto >= 0.01
         and cli.clifornec = 'N'
         and re.StCodigo in ( 'N', 'C', 'P', 'A', 'J' ) and ( re.RecSituacao = 'N')
         and cli.clicodigo = {clicodigo}
-        GROUP BY re.clicodigo, cli.clinomefant
+        GROUP BY 1,2
         """
 
         sql = sql.format(clicodigo=data.get('code'), date=date.strftime('%Y-%m-%d'))
@@ -489,4 +522,13 @@ def _overdue():
         session.execute(sql)
         result = session.fetchall()
 
-        return jsonify({'is_overdue': len(result) > 0}), 200
+        billings_overdued = []
+        for bill in result:
+            billings_overdued.append({
+                'document_number': bill[0],
+                'installment': bill[1],
+                'value': bill[2],
+                'overdue_date': str(bill[3]),
+            })
+
+        return jsonify({'is_overdue': len(result) > 0, 'billings_overdued': billings_overdued}), 200
