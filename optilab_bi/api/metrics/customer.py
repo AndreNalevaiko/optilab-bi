@@ -80,45 +80,27 @@ def get_customers(auth_data=None):
         init_date = date.replace(day=1, month=1, year=last_year).strftime('%Y-%m-%d')
         end_date = date.replace(day=current_day, month=current_month, year=current_year).strftime('%Y-%m-%d')
 
+        column_current_values = 'sold'
+        if params.get('date_type', '') == 'created':
+            column_current_values = 'accumulated_sold'
+
         # Usado para buscar quando é um cliente especifico
         custom_where = ''
         if params.get('customer_code'):
             custom_where = " AND c.customer_code = '%s'" % params.get('customer_code')
 
-        column_current_values = 'sold'
-        if params.get('date_type', '') == 'created':
-            column_current_values = 'accumulated_sold'
+        # Filtros de Estado, Cidade e bairro
+        if params.get('searchFilters') and params['searchFilters'].get('states'):
+            custom_where += ' AND c.state in ({})'.format(",".join(["'%s'" % val for val in params['searchFilters'].get('states')]))
 
-        # DEPRECATED - ### REMOVER FUTURAMENTE
-        # sql = """
-        # SELECT 
-        # c.wallet wallet,
-        # c.customer_code customer_code,
-        # c.customer_name customer_name,
-        # c.group_customer group_customer,
-        # sum(IF(year(c.date) = {last_year}, c.sold_amount / 2, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_qtd_last_year,
-        # sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_value_last_year,
-        # sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
-        # sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
-        # sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_amount / 2, 0 )) qtd_current_month,
-        # sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_value, 0 )) value_current_month
-        # FROM metrics.consolidation c
-        # WHERE 1 = 1
-        # AND date BETWEEN '{init_date}' AND '{end_date}'
-        # {custom_where}
-        # AND c.product = '' AND c.product_group = '' and customer_name != ''
-        # group by customer_code, customer_name, group_customer, wallet
-        # """.format(
-        #     current_year=current_year,
-        #     last_year=last_year,
-        #     current_month=current_month,
-        #     last_month=last_month,
-        #     current_day=current_day,
-        #     init_date=init_date,
-        #     end_date=end_date,
-        #     custom_where=custom_where,
-        #     column_current_values=column_current_values,
-        # )
+        if params.get('searchFilters') and params['searchFilters'].get('cities'):
+            custom_where += ' AND c.city in ({})'.format(",".join(["'%s'" % val for val in params['searchFilters'].get('cities')]))
+
+        if params.get('searchFilters') and params['searchFilters'].get('neighborhoods'):
+            custom_where += ' AND c.neighborhood in ({})'.format(",".join(["'%s'" % val for val in params['searchFilters'].get('neighborhoods')]))
+
+     
+
         sql = """
         SELECT 
         tmp.wallet wallet,
