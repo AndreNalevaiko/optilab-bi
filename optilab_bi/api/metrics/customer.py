@@ -225,28 +225,6 @@ def products(auth_data=None):
         if params.get('date_type', '') == 'created':
             column_current_values = 'accumulated_sold'
 
-        # sql = """
-        # SELECT
-        # c.product,
-        # c.product_group,
-        # sum(IF(year(c.date) = {last_year}, c.sold_amount / 2, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_qtd_last_year,
-        # sum(IF(year(c.date) = {last_year}, c.sold_value, 0 )) / count(distinct month(IF(year(c.date) = {last_year}, c.date, null))) avg_month_value_last_year,
-        # sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_amount / 2, 0 )) / {last_month} avg_month_qtd_current_year,
-        # sum(IF(year(c.date) = {current_year} and month(c.date) <= {last_month}, c.sold_value, 0 )) / {last_month} avg_month_value_current_year,
-        # sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_amount / 2, 0 )) qtd_current_month,
-        # sum(IF(year(c.date) = {current_year} and month(c.date) = {current_month} and day(c.date) <= {current_day}, c.{column_current_values}_value, 0 )) value_current_month
-        # FROM consolidation c
-        # WHERE c.customer_code = '{customer_code}'
-        # AND date BETWEEN '{init_date}' AND '{end_date}'
-        # AND c.product_group != ''
-        # group by product, product_group
-        # ORDER BY 
-        #     CASE 
-        #     WHEN c.product_group IN ('CRIZAL*', 'TRANSITIONS*') THEN 'WWWW'
-        #     WHEN c.product_group like '%%VARILUX%%' THEN 'AAA'
-        #     ELSE c.product_group END asc
-        # """
-
         sql = """
         SELECT 
         tmp.product,
@@ -344,18 +322,7 @@ def products_all_year(auth_data=None):
             GROUP BY 1,2
             order by dt asc;
             """.format(customer_code=customer_code, init_date=init_date, end_date=end_date, columns_values=columns_values)
-            # sql = """
-            # SELECT tp.product_group name, tp.ld dt, sum(tp.value) value, sum(tp.qtd) qtd FROM (
-            #     select c.product_group, date dt, LAST_DAY(date) ld, sum(c.sold_amount) qtd, sum(c.sold_value) value
-            #     from consolidation c
-            #     where c.product_group not like '%%*' and c.product_group != '' and c.product = ''
-            #     and c.customer_code = {customer_code} and date BETWEEN '{init_date}' AND '{end_date}'
-            #     GROUP BY dt, ld, product_group
-            # ) as tp
-            # GROUP BY 1,2;
-            # """.format(customer_code=customer_code, init_date=init_date, end_date=end_date)
 
-        # import ipdb; ipdb.set_trace()
         result = consolidate_result(con.execute(sql))
 
         response = []

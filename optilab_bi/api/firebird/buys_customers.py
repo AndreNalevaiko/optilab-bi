@@ -439,8 +439,6 @@ def _clien_infos(clicodigo):
     address_view = '%s %s, %s - %s %s-%s' % (address[0], address[1], address[2].replace(' ', ''), address[3], address[4], address[5])
     address_search = '%s %s %s %s %s' % (address[1], address[2].replace(' ', ''), address[3], address[4], address[5])
 
-    # address = [{'tab_codigo': res[0], 'tab_desc': res[1]} for res in result]
-
     return jsonify({'tables': tables, 'address': {'view': address_view, 'search': address_search}}), 200
 
 
@@ -454,16 +452,6 @@ def _overdue():
     session = connection.cursor()
 
     if data.get('type') == 'group':
-        # sql = """
-        # SELECT re.clicodigo, cli.clinomefant, sum(re.RecValorAberto), min(re.recdtvencto)
-        # FROM receb re
-        # JOIN clien cli on cli.clicodigo = re.clicodigo
-        # where re.recdtvencto < '{date}' and re.RecValorAberto >= 0.01
-        # and cli.clifornec = 'N'
-        # and re.StCodigo in ( 'N', 'C', 'P', 'A', 'J' ) and ( re.RecSituacao = 'N')
-        # and cli.gclcodigo = {gclcodigo}
-        # GROUP BY re.clicodigo, cli.clinomefant
-        # """
 
         sql = """
         SELECT 
@@ -532,3 +520,43 @@ def _overdue():
             })
 
         return jsonify({'is_overdue': len(result) > 0, 'billings_overdued': billings_overdued}), 200
+
+
+@actions.route('/_brokes', methods=['POST'])
+def _brokes():
+    data = request.get_json()
+
+    date = datetime.strptime(data.get('date'), "%Y-%m-%dT%H:%M:%S.%fZ")
+
+    current_year = date.year
+    last_year = date.year - 1
+    current_month = date.month
+    last_month = date.month - 1
+    current_day = date.day
+
+    if current_month == 1:
+        last_month = current_month
+
+    init_date = date.replace(day=1, month=1, year=last_year).strftime('%Y-%m-%d')
+    end_date = date.replace(day=current_day, month=current_month, year=current_year).strftime('%Y-%m-%d')
+
+    connection = get_connection()
+    session = connection.cursor()
+
+    sql = """
+    SELECT pedper.pedcodigo ped_perda, pedor.pedcodigo ped_origem, pdr.PDPDESCRICAO
+    FROM pedid  pedper -- pedido perda
+    RIGHT JOIN pedxped pdx on pdx.id_peddes = pedper.id_pedido
+    JOIN pedid pedor on pedor.id_pedido = pdx.id_pedori -- pedido origem
+    JOIN pdprd pdr on pdr.ID_PEDIDO = pedper.ID_PEDIDO
+    join produ pro on pro.PROCODIGO = pdr.PROCODIGO
+    where pedper.fiscodigo1 = '5.927' and pedper.peddtemis between '{init_date}' and '{end_date}'
+    and pedor.clicodico = {clicodigo} and pro.TPLCODIGO is not null;
+    """
+
+    sql = sql.format(clicodigo=data.get('clicodigo'), init_date=init_date, end_date=end_date)
+
+    session.execute(sql)
+    result = session.fetchall()
+
+    return jsonify(result), 200
