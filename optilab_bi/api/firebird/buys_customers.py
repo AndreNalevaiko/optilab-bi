@@ -409,13 +409,13 @@ def _clien_infos(clicodigo):
     where tab.tbpsituacao = 'A' AND cli.clicodigo = {clicodigo}
     """.format(clicodigo=clicodigo)
 
-    address_query = """
-    SELECT ec.ENDENDERECO || ' ' || ec.ENDNR || ' ' || ec.ENDCEP || ' ' || ci.CIDNOME || ' ' || ci.CIDUF
-    FROM clien cli
-    join ENDCLI ec on ec.clicodigo = cli.clicodigo
-    join CIDADE ci on ci.CIDCODIGO = ec.CIDCODIGO
-    where cli.clicodigo = {clicodigo}
-    """.format(clicodigo=clicodigo)
+    # address_query = """
+    # SELECT ec.ENDENDERECO || ' ' || ec.ENDNR || ' ' || ec.ENDCEP || ' ' || ci.CIDNOME || ' ' || ci.CIDUF
+    # FROM clien cli
+    # join ENDCLI ec on ec.clicodigo = cli.clicodigo
+    # join CIDADE ci on ci.CIDCODIGO = ec.CIDCODIGO
+    # where cli.clicodigo = {clicodigo}
+    # """.format(clicodigo=clicodigo)
 
     address_query = """
     SELECT ec.ENDTPRUA log, ec.ENDENDERECO endereco, ec.ENDNR numero ,ec.ENDCEP cep ,ci.CIDNOME cidade, ci.CIDUF estado
@@ -423,6 +423,13 @@ def _clien_infos(clicodigo):
     join ENDCLI ec on ec.clicodigo = cli.clicodigo
     join CIDADE ci on ci.CIDCODIGO = ec.CIDCODIGO
     where cli.clicodigo = {clicodigo}
+    """.format(clicodigo=clicodigo)
+
+    payment_method_query = """
+    select tbf.TBFDESCRICAO tab_fechamento, plp.PGTDESCRICAO plano_pag from clien cli
+    join tbfecha tbf on tbf.TBFCODIGO = cli.TBFCODIGO
+    join plpto plp   on plp.PGTCODIGO = cli.PGTCODIGO
+    where cli.clicodigo = {clicodigo};
     """.format(clicodigo=clicodigo)
 
     connection = get_connection()
@@ -439,7 +446,18 @@ def _clien_infos(clicodigo):
     address_view = '%s %s, %s - %s %s-%s' % (address[0], address[1], address[2].replace(' ', ''), address[3], address[4], address[5])
     address_search = '%s %s %s %s %s' % (address[1], address[2].replace(' ', ''), address[3], address[4], address[5])
 
-    return jsonify({'tables': tables, 'address': {'view': address_view, 'search': address_search}}), 200
+    session.execute(payment_method_query)
+    payment_method = session.fetchall()[0]
+    payment_method = {
+        'tab_fechamento': payment_method[0],
+        'plano_pag': payment_method[1]
+    }
+
+    return jsonify({
+        'tables': tables,
+        'address': {'view': address_view, 'search': address_search},
+        'payment_method': payment_method
+    }), 200
 
 
 @actions.route('/_overdue', methods=['POST'])
@@ -529,29 +547,24 @@ def _brokes():
     date = datetime.strptime(data.get('date'), "%Y-%m-%dT%H:%M:%S.%fZ")
 
     current_year = date.year
-    last_year = date.year - 1
     current_month = date.month
-    last_month = date.month - 1
     current_day = date.day
 
-    if current_month == 1:
-        last_month = current_month
-
-    init_date = date.replace(day=1, month=1, year=last_year).strftime('%Y-%m-%d')
+    init_date = date.replace(day=1, month=current_month, year=current_year).strftime('%Y-%m-%d')
     end_date = date.replace(day=current_day, month=current_month, year=current_year).strftime('%Y-%m-%d')
 
     connection = get_connection()
     session = connection.cursor()
 
     sql = """
-    SELECT pedper.pedcodigo ped_perda, pedor.pedcodigo ped_origem, pdr.PDPDESCRICAO
+    SELECT pedper.pedcodigo ped_perda, pedor.pedcodigo ped_origem, pdr.PDPDESCRICAO product, cast(pedper.PEDOBSER as VARCHAR(512))
     FROM pedid  pedper -- pedido perda
-    RIGHT JOIN pedxped pdx on pdx.id_peddes = pedper.id_pedido
+    JOIN pedxped pdx on pdx.id_peddes = pedper.id_pedido
     JOIN pedid pedor on pedor.id_pedido = pdx.id_pedori -- pedido origem
-    JOIN pdprd pdr on pdr.ID_PEDIDO = pedper.ID_PEDIDO
+    JOIN pdprd pdr on pdr.ID_PEDIDO = pedper.ID_PEDIDO and pdr.EMPCODIGO = pedper.EMPCODIGO
     join produ pro on pro.PROCODIGO = pdr.PROCODIGO
     where pedper.fiscodigo1 = '5.927' and pedper.peddtemis between '{init_date}' and '{end_date}'
-    and pedor.clicodico = {clicodigo} and pro.TPLCODIGO is not null;
+    and pedor.clicodigo = {clicodigo} and pro.TPLCODIGO is not null and pedor.PEDSITPED != 'C';
     """
 
     sql = sql.format(clicodigo=data.get('clicodigo'), init_date=init_date, end_date=end_date)
@@ -559,4 +572,6 @@ def _brokes():
     session.execute(sql)
     result = session.fetchall()
 
-    return jsonify(result), 200
+    brokes = [dict(ped_perda=b[0], ped_origem=b[1], product=b[2], obser=b[3]) for b in result]
+
+    return jsonify(brokes), 200
