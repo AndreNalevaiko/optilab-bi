@@ -27,7 +27,7 @@ def consolidate_result(result):
     return return_
 
 
-@actions.route('/', methods=['POST'])
+@actions.route('/month', methods=['POST'])
 @user_manager.auth_required('user')
 def billings(auth_data=None):
     params = request.get_json()
@@ -121,3 +121,142 @@ def billings_all_year(auth_data=None):
         result = consolidate_result(result)
 
     return jsonify(result)
+
+
+@actions.route('/ytd', methods=['POST'])
+@user_manager.auth_required('user')
+def ytd(auth_data=None):
+    params = request.get_json()
+    result = {}
+    with db_metrics.connect() as con:
+        date = params.get('date')
+        date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
+        wallets = ','.join(params.get('wallets'))
+
+        init_date = date.replace(day=1).strftime('%Y-%m-%d')
+        end_date = date.strftime('%Y-%m-%d')
+
+        sql = """
+        SELECT YEAR('{init_date}') year, wallet, sum(total_value) value
+        FROM metrics.consolidation 
+        where company = '' and customer_name = '' and product_group = ''
+        and date between date_format('{init_date}', '%%Y-01-01') AND '{end_date}'
+        and wallet in ({wallets})
+        group by 1,2
+        UNION ALL
+        SELECT YEAR(DATE_SUB('{init_date}', INTERVAL 1 YEAR)) year, wallet, sum(total_value) value
+        FROM metrics.consolidation 
+        where company = '' and customer_name = '' and product_group = ''
+        and date between DATE_SUB(date_format('{init_date}', '%%Y-01-01'), INTERVAL 1 YEAR) AND DATE_SUB('{end_date}', INTERVAL 1 YEAR)
+        and wallet in ({wallets})
+        group by 1,2
+        UNION ALL
+        SELECT YEAR('{init_date}') year, '0', sum(total_value) value
+        FROM metrics.consolidation 
+        where company = '' and customer_name = '' and product_group = ''
+        and date between date_format('{init_date}', '%%Y-01-01') AND '{end_date}'
+        group by 1,2
+        UNION ALL
+        SELECT YEAR(DATE_SUB('{init_date}', INTERVAL 1 YEAR)) year, '0', sum(total_value) value
+        FROM metrics.consolidation 
+        where company = '' and customer_name = '' and product_group = ''
+        and date between DATE_SUB(date_format('{init_date}', '%%Y-01-01'), INTERVAL 1 YEAR) AND DATE_SUB('{end_date}', INTERVAL 1 YEAR)
+        group by 1,2
+        UNION ALL
+        SELECT YEAR('{init_date}') year, '', sum(total_value) value
+        FROM metrics.consolidation 
+        where company = '' and customer_name = '' and product_group = ''
+        and date between date_format('{init_date}', '%%Y-01-01') AND '{end_date}'
+        and wallet not in ({wallets})
+        group by 1,2
+        UNION ALL
+        SELECT YEAR(DATE_SUB('{init_date}', INTERVAL 1 YEAR)) year, '', sum(total_value) value
+        FROM metrics.consolidation 
+        where company = '' and customer_name = '' and product_group = ''
+        and date between DATE_SUB(date_format('{init_date}', '%%Y-01-01'), INTERVAL 1 YEAR) AND DATE_SUB('{end_date}', INTERVAL 1 YEAR)
+        and wallet not in ({wallets})
+        group by 1,2
+        order by 1;
+        """
+
+        sql = sql.format(
+            init_date=init_date,
+            end_date=end_date,
+            wallets=wallets,
+        )
+
+        result = con.execute(sql)
+        result = consolidate_result(result)
+
+    return jsonify(result)
+
+@actions.route('/totals', methods=['POST'])
+@user_manager.auth_required('user')
+def totals(auth_data=None):
+    params = request.get_json()
+    result = {}
+    with db_metrics.connect() as con:
+        date = params.get('date')
+        date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
+        wallets = ','.join(params.get('wallets'))
+
+        init_date = date.replace(day=1).strftime('%Y-%m-%d')
+        end_date = date.strftime('%Y-%m-%d')
+
+        sql = """
+        SELECT YEAR('{init_date}') year, wallet, sum(total_value) value
+        FROM metrics.consolidation 
+        where company = '' and customer_name = '' and product_group = ''
+        and date between date_format('{init_date}', '%%Y-01-01') AND LAST_DAY(date_format('{end_date}', '%%Y-12-01'))
+        and wallet in ({wallets})
+        group by 1,2
+        UNION ALL
+        SELECT YEAR(DATE_SUB('{init_date}', INTERVAL 1 YEAR)) year, wallet, sum(total_value) value
+        FROM metrics.consolidation 
+        where company = '' and customer_name = '' and product_group = ''
+        and date between DATE_SUB(date_format('{init_date}', '%%Y-01-01'), INTERVAL 1 YEAR) AND 
+        LAST_DAY(DATE_SUB(date_format('{end_date}', '%%Y-12-01'), INTERVAL 1 YEAR))
+        and wallet in ({wallets})
+        group by 1,2
+        UNION ALL
+        SELECT YEAR('{init_date}') year, '0', sum(total_value) value
+        FROM metrics.consolidation 
+        where company = '' and customer_name = '' and product_group = ''
+        and date between date_format('{init_date}', '%%Y-01-01') AND LAST_DAY(date_format('{end_date}', '%%Y-12-01'))
+        group by 1,2
+        UNION ALL
+        SELECT YEAR(DATE_SUB('{init_date}', INTERVAL 1 YEAR)) year, wallet, sum(total_value) value
+        FROM metrics.consolidation 
+        where company = '' and customer_name = '' and product_group = ''
+        and date between DATE_SUB(date_format('{init_date}', '%%Y-01-01'), INTERVAL 1 YEAR) AND 
+        LAST_DAY(DATE_SUB(date_format('{end_date}', '%%Y-12-01'), INTERVAL 1 YEAR))
+        group by 1,2
+        UNION ALL
+        SELECT YEAR('{init_date}') year, '', sum(total_value) value
+        FROM metrics.consolidation 
+        where company = '' and customer_name = '' and product_group = ''
+        and date between date_format('{init_date}', '%%Y-01-01') AND LAST_DAY(date_format('{end_date}', '%%Y-12-01'))
+        and wallet not in ({wallets})
+        group by 1,2
+        UNION ALL
+        SELECT YEAR(DATE_SUB('{init_date}', INTERVAL 1 YEAR)) year, '', sum(total_value) value
+        FROM metrics.consolidation 
+        where company = '' and customer_name = '' and product_group = ''
+        and date between DATE_SUB(date_format('{init_date}', '%%Y-01-01'), INTERVAL 1 YEAR) AND 
+        LAST_DAY(DATE_SUB(date_format('{end_date}', '%%Y-12-01'), INTERVAL 1 YEAR))
+        and wallet not in ({wallets})
+        group by 1,2
+        order by 1;
+        """
+
+        sql = sql.format(
+            init_date=init_date,
+            end_date=end_date,
+            wallets=wallets,
+        )
+
+        result = con.execute(sql)
+        result = consolidate_result(result)
+
+    return jsonify(result)
+    
