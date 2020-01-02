@@ -109,7 +109,7 @@ def get_billings(auth_data=None):
             AND date BETWEEN '{init_date}' AND '{end_date}'
             {custom_where}
             AND c.product = '' AND c.product_group = '' and c.group_customer != ''
-            group by 1,2,3,4,{ytd_group_by}
+            group by 1,2,3,4{ytd_group_by}
         ) as tmp
         GROUP BY 1,2,3,4;
         """.format(
