@@ -42,6 +42,8 @@ def get_billings(auth_data=None):
         current_day = date.day
         day_ytd = current_day
 
+        ytd_columns, ytd_dimension, ytd_group_by = '', '', ''
+
         if current_month == 1:
             last_month = current_month
 
@@ -58,6 +60,16 @@ def get_billings(auth_data=None):
         if params.get('date_type', '') == 'created':
             column_current_values = 'accumulated_sold'
 
+        if params.get('view_type', '') == 'ytd':
+            ytd_columns = """
+            ,SUM(IF(tmp.year = {last_year} AND tmp.month <= {current_month} AND tmp.day <= {day_ytd}, tmp.amount_solded / 2, 0)) ytd_qtd_last_year,
+            SUM(IF(tmp.year = {last_year} AND tmp.month <= {current_month} AND tmp.day <= {day_ytd}, tmp.value_solded, 0)) ytd_value_last_year,
+            SUM(IF(tmp.year = {current_year} AND tmp.month <= {current_month} AND tmp.day <= {current_day}, tmp.amount_solded / 2, 0)) ytd_qtd_current_year,
+            SUM(IF(tmp.year = {current_year} AND tmp.month <= {current_month} AND tmp.day <= {current_day}, tmp.value_solded, 0)) ytd_value_current_year
+            """.format(last_year=last_year, current_year=current_year, current_month=current_month, day_ytd=day_ytd, current_day=current_day)
+            ytd_dimension = 'DAY(c.date) day,'
+            ytd_group_by = ',6'
+
         custom_where = ''
 
         # Filtros de Estado, Cidade e bairro
@@ -70,8 +82,6 @@ def get_billings(auth_data=None):
         if params.get('searchFilters') and params['searchFilters'].get('neighborhoods'):
             custom_where += ' AND c.neighborhood in ({})'.format(",".join(["'%s'" % val for val in params['searchFilters'].get('neighborhoods')]))
 
-     
-
         sql = """
         SELECT 
         tmp.wallet wallet,
@@ -83,16 +93,13 @@ def get_billings(auth_data=None):
         AVG(if(tmp.year = {current_year} and tmp.month <= {last_month} and tmp.amount_solded > 0, tmp.amount_solded / 2, null)) avg_month_qtd_current_year,
         AVG(if(tmp.year = {current_year} and tmp.month <= {last_month} and tmp.value_solded > 0, tmp.value_solded, null)) avg_month_value_current_year,
         SUM(IF(tmp.year = {current_year} and tmp.month = {current_month}, tmp.amount_solded / 2, 0)) qtd_current_month,
-        SUM(IF(tmp.year = {current_year} and tmp.month = {current_month}, tmp.value_solded, 0)) value_current_month,
-        SUM(IF(tmp.year = {last_year} AND tmp.month <= {current_month} AND tmp.day <= {day_ytd}, tmp.amount_solded / 2, 0)) ytd_qtd_last_year,
-        SUM(IF(tmp.year = {last_year} AND tmp.month <= {current_month} AND tmp.day <= {day_ytd}, tmp.value_solded, 0)) ytd_value_last_year,
-        SUM(IF(tmp.year = {current_year} AND tmp.month <= {current_month} AND tmp.day <= {current_day}, tmp.amount_solded / 2, 0)) ytd_qtd_current_year,
-        SUM(IF(tmp.year = {current_year} AND tmp.month <= {current_month} AND tmp.day <= {current_day}, tmp.value_solded, 0)) ytd_value_current_year
+        SUM(IF(tmp.year = {current_year} and tmp.month = {current_month}, tmp.value_solded, 0)) value_current_month
+        {ytd_columns}
         FROM (
             SELECT 
             c.wallet wallet,
             c.group_customer group_customer,
-            DAY(c.date) day,
+            {ytd_dimension}
             MONTH(c.date) month,
             YEAR(c.date) year,
             SUM(c.{column_current_values}_amount) amount_solded,
@@ -102,7 +109,7 @@ def get_billings(auth_data=None):
             AND date BETWEEN '{init_date}' AND '{end_date}'
             {custom_where}
             AND c.product = '' AND c.product_group = '' and c.group_customer != ''
-            group by 1,2,3,4,5
+            group by 1,2,3,4,5{ytd_group_by}
         ) as tmp
         GROUP BY 1,2,3,4;
         """.format(
@@ -114,8 +121,9 @@ def get_billings(auth_data=None):
             end_date=end_date,
             custom_where=custom_where,
             column_current_values=column_current_values,
-            current_day=current_day,
-            day_ytd=day_ytd
+            ytd_columns=ytd_columns,
+            ytd_dimension=ytd_dimension,
+            ytd_group_by=ytd_group_by
         )
 
         result = con.execute(sql)
