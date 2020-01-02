@@ -68,7 +68,7 @@ def get_billings(auth_data=None):
             SUM(IF(tmp.year = {current_year} AND tmp.month <= {current_month} AND tmp.day <= {current_day}, tmp.value_solded, 0)) ytd_value_current_year
             """.format(last_year=last_year, current_year=current_year, current_month=current_month, day_ytd=day_ytd, current_day=current_day)
             ytd_dimension = 'DAY(c.date) day,'
-            ytd_group_by = ',6'
+            ytd_group_by = ',5'
 
         custom_where = ''
 
@@ -109,7 +109,7 @@ def get_billings(auth_data=None):
             AND date BETWEEN '{init_date}' AND '{end_date}'
             {custom_where}
             AND c.product = '' AND c.product_group = '' and c.group_customer != ''
-            group by 1,2,3,4,5{ytd_group_by}
+            group by 1,2,3,4,{ytd_group_by}
         ) as tmp
         GROUP BY 1,2,3,4;
         """.format(
