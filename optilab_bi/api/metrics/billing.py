@@ -225,7 +225,7 @@ def totals(auth_data=None):
         and date between date_format('{init_date}', '%%Y-01-01') AND LAST_DAY(date_format('{end_date}', '%%Y-12-01'))
         group by 1,2
         UNION ALL
-        SELECT YEAR(DATE_SUB('{init_date}', INTERVAL 1 YEAR)) year, wallet, sum(total_value) value
+        SELECT YEAR(DATE_SUB('{init_date}', INTERVAL 1 YEAR)) year, '0', sum(total_value) value
         FROM metrics.consolidation 
         where company = '' and customer_name = '' and product_group = ''
         and date between DATE_SUB(date_format('{init_date}', '%%Y-01-01'), INTERVAL 1 YEAR) AND 
