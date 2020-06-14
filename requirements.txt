@@ -4,7 +4,7 @@ Flask-SQLAlchemy==2.3.1
 Flask-Cors==2.1.2
 SQLAlchemy==1.1.18
 PyMySQL==0.7.11
-requests==2.18.4
+requests==2.20.0
 alembic==0.9.8
 Flask-Restless==0.17.0
 pandas==0.19.2
